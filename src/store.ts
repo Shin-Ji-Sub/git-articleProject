@@ -25,7 +25,7 @@ const article = createSlice({
   initialState : articleValue,
   reducers : {
     setInitialState(state, action :PayloadAction<articleType[]>){
-      return state = [...action.payload];
+      return state = [...state, ...action.payload];
     }
   }
 });
