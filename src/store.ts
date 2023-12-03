@@ -9,8 +9,7 @@ import { configureStore, createSlice, PayloadAction } from '@reduxjs/toolkit'
   source : source
 } ]
 */
-
-export interface articleType  {
+export type ArticleType = {
   id : number,
   headline : string,
   byline : string,
@@ -18,24 +17,53 @@ export interface articleType  {
   source : string
 };
 
-const articleValue :articleType[] = [];
+
+/* filteringValue initialState
+{
+  headline : headline,
+  date : date,
+  country : country
+}
+*/
+export type FilteringValueType = {
+  headline? : string,
+  date? : string,
+  country? : string[]
+}
+
+
+const articleValue :ArticleType[] = [];
 
 const article = createSlice({
   name : 'article',
   initialState : articleValue,
   reducers : {
-    setInitialState(state, action :PayloadAction<articleType[]>){
+    setInitialState(state, action :PayloadAction<ArticleType[]>){
       return state = [...state, ...action.payload];
+    }
+  }
+});
+
+const filterValue :FilteringValueType = {}
+
+const filteringValue = createSlice({
+  name : 'filteringValue',
+  initialState : filterValue,
+  reducers : {
+    applyFilter(state, action :PayloadAction<FilteringValueType>){
+      return state = {...action.payload};
     }
   }
 });
 
 
 export const { setInitialState } = article.actions;
+export const { applyFilter } = filteringValue.actions;
 
 export const store = configureStore({
   reducer: {
-    article : article.reducer
+    article : article.reducer,
+    filteringValue : filteringValue.reducer
   }
 });
 
