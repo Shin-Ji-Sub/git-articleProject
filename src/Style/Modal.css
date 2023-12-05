@@ -34,7 +34,7 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  row-gap: 1rem;
+  row-gap: 0.5rem;
 }
 
 .filter-container ul li label,
@@ -108,6 +108,7 @@
 
 .filter-container li:nth-child(4) {
   position: relative;
+  height: 100%;
 }
 
 .filter-container li:nth-child(4) button {
@@ -121,4 +122,20 @@
   position: absolute;
   bottom: 0;
   left: 0;
+}
+
+
+/* ===== Response 440 ===== */
+@media screen and (max-width: 440px){
+  .filter-container ul {
+    row-gap: 1rem;
+  }
+
+  .country-button-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    row-gap: 0.4rem;
+    column-gap: 0.4rem;
+  }
 }

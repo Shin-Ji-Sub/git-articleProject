@@ -9,28 +9,18 @@ import { configureStore, createSlice, PayloadAction } from '@reduxjs/toolkit'
   source : source
 } ]
 */
+type KeywordType = {
+  [key :string] : string
+}
+
 export type ArticleType = {
   id : number,
   headline : string,
   byline : string,
   date : string,
   source : string
+  keyword : KeywordType[]
 };
-
-
-/* filteringValue initialState
-{
-  headline : headline,
-  date : date,
-  country : country
-}
-*/
-export type FilteringValueType = {
-  headline? : string,
-  date? : string,
-  country? : string[]
-}
-
 
 const articleValue :ArticleType[] = [];
 
@@ -43,6 +33,20 @@ const article = createSlice({
     }
   }
 });
+
+
+/* filteringValue initialState
+{
+  headline : headline,
+  date : date,
+  country : country
+}
+*/
+type FilteringValueType = {
+  headline? : string,
+  date? : string,
+  country? : string[]
+}
 
 const filterValue :FilteringValueType = {}
 
@@ -57,13 +61,26 @@ const filteringValue = createSlice({
 });
 
 
+const articleAfterFiltering = createSlice({
+  name : 'articleAfterFiltering',
+  initialState : articleValue,
+  reducers : {
+    afterFilter(state, action :PayloadAction<ArticleType[]>){
+      return state = [...action.payload];
+    }
+  }
+});
+
+
 export const { setInitialState } = article.actions;
 export const { applyFilter } = filteringValue.actions;
+export const { afterFilter } = articleAfterFiltering.actions;
 
 export const store = configureStore({
   reducer: {
     article : article.reducer,
-    filteringValue : filteringValue.reducer
+    filteringValue : filteringValue.reducer,
+    articleAfterFiltering : articleAfterFiltering.reducer
   }
 });
 
