@@ -4,16 +4,19 @@ import 'react-datepicker/dist/react-datepicker.module.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendarCheck } from "@fortawesome/free-solid-svg-icons";
 import { useDispatch } from 'react-redux';
-import { applyFilter } from '../store';
+// import { applyFilter } from '../store';
+// import { filteringFunction } from '../store';
+import { FilteringType } from '../App';
 
 
 // Filtering Modal
 type ModalType = {
   modalOn : boolean,
-  setModalOn : Dispatch<SetStateAction<boolean>>
+  setModalOn : Dispatch<SetStateAction<boolean>>,
+  setFilteringValue : Dispatch<SetStateAction<FilteringType>>
 }
 
-function Modal ({modalOn, setModalOn} : ModalType) {
+function Modal ({modalOn, setModalOn, setFilteringValue} : ModalType) {
   const [startDate, setStartDate] = useState(new Date());
   const [placeholderValue, setPlaceholderValue] = useState(false);
   const [country, setCountry] = useState([
@@ -111,11 +114,11 @@ function Modal ({modalOn, setModalOn} : ModalType) {
                     countryValue.push(value.nation);
                   }
                 });
-                dispatch(applyFilter({
+                setFilteringValue({
                   headline : headlineValue.value,
                   date : dateValue.value,
                   country : countryValue
-                }));
+                });
                 setModalOn(false);
               }
             }}>필터 적용하기</button>

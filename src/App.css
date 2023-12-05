@@ -112,7 +112,7 @@ article .article-top button {
   right: 0;
   border: none;
   background-color: white;
-  color: var(--main-bg);
+  color: var(--main-bg); /* rgb(255, 180, 35) */
 }
 
 article .article-bottom {
