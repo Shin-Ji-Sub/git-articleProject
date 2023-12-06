@@ -22,7 +22,9 @@ export type ArticleType = {
   byline : string,
   date : string,
   source : string
-  keyword : KeywordType[]
+  keyword : KeywordType[],
+  url : string,
+  scrap: boolean
 };
 
 const articleValue :ArticleType[] = [];
@@ -127,26 +129,24 @@ const articleAfterFiltering = createSlice({
 });
 
 
-type ScrapType = {
-  id : string,
-  scrap : boolean
-}
+// type ScrapType = ArticleType & {
+//   scrap : boolean
+// }
 
-const scrapInitialState :ScrapType[] = [];
+const scrapInitialState :ArticleType[] = [];
 
 const scrapArticle = createSlice({
   name : 'scrapArticle',
   initialState : scrapInitialState,
   reducers : {
-    saveArticle(state, action :PayloadAction<string>){
-      let findIdx = state.findIndex(v => v.id === action.payload);
+    saveArticle(state, action :PayloadAction<ArticleType>){
+      let findIdx = state.findIndex(v => v.id === action.payload.id);
       if(findIdx === -1){
-        state.push({
-          id : action.payload,
-          scrap : true
-        });
+        let copy = {...action.payload};
+        copy.scrap = true;
+        state.push(copy);
       } else {
-        state[findIdx].scrap = false;
+        state[findIdx].scrap = !state[findIdx].scrap;
       }
     }
   }

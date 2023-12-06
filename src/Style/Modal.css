@@ -112,7 +112,7 @@
 }
 
 .filter-container li:nth-child(4) button {
-  background-color: rgb(66, 135, 245);
+  background-color: var(--button-bg);
   color: white;
   border: none;
   border-radius: 1rem;

@@ -5,48 +5,73 @@ import './Style/Modal.css';
 import './Style/Scrap.css';
 import { useState, useEffect } from "react";
 import { AppDispatch } from "./index";
-import { Routes, Route, Link, useNavigate } from 'react-router-dom';
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { useSelector, useDispatch } from "react-redux/es/exports";
 import { setInitialState, RootState, ArticleType, afterFilter, saveArticle } from "./store";
 import { Modal } from "./Component/Modal";
 import { Scrap } from "./Component/Scrap";
 
-// Article Component
-type ArticleComponentType = {
-  value : ArticleType,
-  idValue : string,
-  dispatch : AppDispatch
-}
+// // Article Component
+// type ArticleComponentType = {
+//   value : ArticleType,
+//   idValue : string,
+//   dispatch : AppDispatch
+// }
 
-function Article ({value, idValue, dispatch} :ArticleComponentType) {
-  return(
-    <article>
-      <div className="article-top">
-        <h1>{value.headline}</h1>
-        <button id={idValue} className="scrap-button" onClick={(e) => {
-          dispatch(saveArticle(e.currentTarget.id));
-          e.preventDefault();
-        }}><FontAwesomeIcon icon={faStar} /></button>
-      </div>
-      <ul className="article-bottom">
-        <li className="article-origin">
-          <div>{
-            typeof value.source === 'string' && value.source.length > 15
-            ? value.source.slice(0, 15) + '...'
-            : value.source  
-          }</div>
-          <div>{
-            typeof value.byline === 'string' && value.byline.length > 15
-            ? value.byline.slice(0, 15) + '...'
-            : value.byline
-          }</div>
-        </li>
-        <li className="article-date">{value.date}</li>
-      </ul>
-    </article>
-  )
-}
+// function Article ({value, idValue, dispatch} :ArticleComponentType) {
+//   return(
+//     <article>
+//       <div className="article-top">
+//         <h1>{value.headline}</h1>
+//         <button id={idValue} className="scrap-button" onClick={(e) => {
+//           let buttonEl = document.getElementById(`${value.id}`);
+//               // if(buttonEl instanceof HTMLButtonElement){
+//               //   if(value.scrap){
+//               //     buttonEl.style.color = 'rgb(255, 180, 35)';
+//               //   } else {
+//               //     buttonEl.style.color = 'var(--main-bg)';
+//               //   }
+//               // }
+//           let getItem = localStorage.getItem('scrapList');
+//           getItem = JSON.parse(getItem || "");
+//           // @ts-expect-error
+//           let idx = getItem.findIndex(v => v.id === value.id);
+//           if(idx === -1){
+//             // @ts-expect-error
+//             getItem.push(value);
+//             if(buttonEl instanceof HTMLButtonElement){
+//               buttonEl.style.color = 'rgb(255, 180, 35)';
+//             }
+//           } else {
+//             // @ts-expect-error
+//             getItem.splice(idx, 1);
+//             if(buttonEl instanceof HTMLButtonElement){
+//               buttonEl.style.color = 'var(--main-bg)';
+//             }
+//           }
+//           localStorage.setItem('scrapList', JSON.stringify(getItem));
+//           e.preventDefault();
+//         }}><FontAwesomeIcon icon={faStar} /></button>
+//       </div>
+//       <ul className="article-bottom">
+//         <li className="article-origin">
+//           <div>{
+//             typeof value.source === 'string' && value.source.length > 15
+//             ? value.source.slice(0, 15) + '...'
+//             : value.source  
+//           }</div>
+//           <div>{
+//             typeof value.byline === 'string' && value.byline.length > 15
+//             ? value.byline.slice(0, 15) + '...'
+//             : value.byline
+//           }</div>
+//         </li>
+//         <li className="article-date">{value.date}</li>
+//       </ul>
+//     </article>
+//   )
+// }
 
 
 export type FilteringType = {
@@ -65,13 +90,12 @@ function App() {
   /** /////////////////////////////////////////////////////// */
   const [headerList, setHeaderList] = useState(['전체 헤드라인', '전체 날짜', '전체 국가']);
   const [headerListIcon] = useState([<FontAwesomeIcon className="header-icon" icon={faMagnifyingGlass}/>, <FontAwesomeIcon className="header-icon" icon={faCalendarCheck}/>])
-  const [articleUrl, setArticleUrl] = useState<string[]>([]);
   let [articleArray, setArticleArray] = useState<ArticleType[]>([]);
   let [scrollCount, setScrollCount] = useState(0);
-  let [currentUrl, setCurrentUrl] = useState('홈');
   let [modalOn, setModalOn] = useState(false);
   let [scrollEvent, setScrollEvent] = useState(true);
   let navigate = useNavigate();
+  let location = useLocation();
   const state = useSelector((state :RootState) => state);
   const dispatch = useDispatch<AppDispatch>();
   /** Scroll Event Handler Function */
@@ -125,20 +149,18 @@ function App() {
     const PROXY = window.location.hostname === 'localhost' ? 'https://api.nytimes.com' : '/proxy';
     axios.get(`${PROXY}/svc/search/v2/articlesearch.json?page=${scrollCount}&api-key=vcX7Gz19ajfmaRuAARlHUrclu7mZh46l`)
     .then((result) => {
-      // console.log(result.data.response.docs);
+      console.log(result.data.response.docs);
       let arr :ArticleType[] = [];
       for(let i = 0; i < 10; i++){
-        let copy = [...articleUrl];
-        copy.push(result.data.response.docs[i].web_url);
-        setArticleUrl(copy);
-
         arr.push({
           id : result.data.response.docs[i]._id.slice(-12),
           headline : result.data.response.docs[i].headline.main,
           byline : result.data.response.docs[i].byline.original?.slice(3),
           date : result.data.response.docs[i].pub_date.slice(0, 10),
           source : result.data.response.docs[i].source,
-          keyword : result.data.response.docs[i].keywords
+          keyword : result.data.response.docs[i].keywords,
+          url : result.data.response.docs[i].web_url,
+          scrap : false
         });
       }
       dispatch(setInitialState(arr));
@@ -241,20 +263,18 @@ function App() {
       const PROXY = window.location.hostname === 'localhost' ? 'https://api.nytimes.com' : '/proxy';
       axios.get(`${PROXY}/svc/search/v2/articlesearch.json?begin_date=${dateValue}&end_date=${dateValue}&api-key=vcX7Gz19ajfmaRuAARlHUrclu7mZh46l`)
       .then((result) => {
-        console.log(result.data.response.docs);
+        // console.log(result.data.response.docs);
         let arr :ArticleType[] = [];
         for(let i = 0; i < 10; i++){
-          let copy :string[] = [];
-          copy.push(result.data.response.docs[i].web_url);
-          setArticleUrl(copy);
-
           arr.push({
             id : result.data.response.docs[i]._id.slice(-12),
             headline : result.data.response.docs[i].headline.main,
             byline : result.data.response.docs[i].byline.original?.slice(3),
             date : result.data.response.docs[i].pub_date.slice(0, 10),
             source : result.data.response.docs[i].source,
-            keyword : result.data.response.docs[i].keywords
+            keyword : result.data.response.docs[i].keywords,
+            url : result.data.response.docs[i].web_url,
+            scrap : false
           });
         }
         console.log('꺾인 마음');
@@ -425,7 +445,7 @@ function App() {
 
   // Footer UI
   useEffect(() => {
-    if(currentUrl === '홈'){
+    if(location.pathname === '/'){
       let footerHome = document.querySelector('.footer-home');
       let footerScrap = document.querySelector('.footer-scrap');
       if(footerHome instanceof HTMLLIElement && footerScrap instanceof HTMLLIElement){
@@ -440,7 +460,7 @@ function App() {
         footerScrap.style.opacity = '1';
       }
     }
-  }, [currentUrl]);
+  }, [location.pathname]);
 
   // Modal On
   useEffect(() => {
@@ -602,18 +622,25 @@ function App() {
   //   }
   // }, [state.filteringValue]);
 
+  // Scrap UI
   useEffect(() => {
-    state.scrapArticle.map((value) => {
-      let buttonEl = document.getElementById(`${value.id}`);
-      if(buttonEl instanceof HTMLButtonElement){
-        if(value.scrap){
+    let getItem = localStorage.getItem('scrapList');
+    if(typeof getItem === 'string'){
+      getItem = JSON.parse(getItem);
+    }
+    if(getItem === null){
+      localStorage.setItem('scrapList', JSON.stringify([]));
+    } else {
+      // @ts-expect-error
+      getItem.map((value) => {
+        let buttonEl = document.getElementById(`${value.id}`);
+        if(buttonEl instanceof HTMLButtonElement){
           buttonEl.style.color = 'rgb(255, 180, 35)';
-        } else {
-          buttonEl.style.color = 'var(--main-bg)';
         }
-      }
-    });
-  },[state.scrapArticle]);
+      });
+    }
+  });
+
 
   return (
     <div className="App">
@@ -639,9 +666,50 @@ function App() {
               {
                 articleArray.map((value, i) => {
                   return(
-                    <Link className="link-article" to={`${articleUrl[i]}`} key={i}>
-                      <Article dispatch={dispatch} idValue={value.id} value={value}></Article>
-                    </Link>
+                    <a className="link-article" href={`${value.url}`} key={i}>
+                      <article>
+                        <div className="article-top">
+                          <h1>{value.headline}</h1>
+                          <button id={value.id} className="scrap-button" onClick={(e) => {
+                            let buttonEl = document.getElementById(`${value.id}`);
+                            let getItem = localStorage.getItem('scrapList');
+                            getItem = JSON.parse(getItem || "");
+                            // @ts-expect-error
+                            let idx = getItem.findIndex(v => v.id === value.id);
+                            if(idx === -1){
+                              // @ts-expect-error
+                              getItem.push(value);
+                              if(buttonEl instanceof HTMLButtonElement){
+                                buttonEl.style.color = 'rgb(255, 180, 35)';
+                              }
+                            } else {
+                              // @ts-expect-error
+                              getItem.splice(idx, 1);
+                              if(buttonEl instanceof HTMLButtonElement){
+                                buttonEl.style.color = 'var(--main-bg)';
+                              }
+                            }
+                            localStorage.setItem('scrapList', JSON.stringify(getItem));
+                            e.preventDefault();
+                          }}><FontAwesomeIcon icon={faStar} /></button>
+                        </div>
+                        <ul className="article-bottom">
+                          <li className="article-origin">
+                            <div>{
+                              typeof value.source === 'string' && value.source.length > 15
+                              ? value.source.slice(0, 15) + '...'
+                              : value.source  
+                            }</div>
+                            <div>{
+                              typeof value.byline === 'string' && value.byline.length > 15
+                              ? value.byline.slice(0, 15) + '...'
+                              : value.byline
+                            }</div>
+                          </li>
+                          <li className="article-date">{value.date}</li>
+                        </ul>
+                      </article>
+                    </a>
                   )
                 })
               }
@@ -655,16 +723,10 @@ function App() {
       </Routes>
       <footer>
         <ul className="footer-container">
-          <li className="footer-home" onClick={(e) => {
-            if(typeof e.currentTarget.textContent === 'string'){
-              setCurrentUrl(e.currentTarget.textContent);
-            }
+          <li className="footer-home" onClick={() => {
             navigate('/');
             }}><FontAwesomeIcon className="footer-icon" icon={faHouse} />홈</li>
-          <li className="footer-scrap" onClick={(e) => {
-            if(typeof e.currentTarget.textContent === 'string'){
-              setCurrentUrl(e.currentTarget.textContent);
-            }
+          <li className="footer-scrap" onClick={() => {
             navigate('/scrap');
           }}><FontAwesomeIcon className="footer-icon" icon={faFileLines} />스크랩</li>
         </ul>
@@ -672,5 +734,7 @@ function App() {
     </div>
   );
 }
+
+// export { Article }
 
 export default App;
