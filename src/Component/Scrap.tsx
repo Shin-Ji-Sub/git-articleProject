@@ -234,18 +234,22 @@ function Scrap(){
   useEffect(() => {
     let getItem = localStorage.getItem('scrapList');
     let InitialContainer = document.querySelector('.initial-container');
+    let scrapHeader = document.querySelector('.scrap-header');
     if(getItem === null){
-      if(InitialContainer instanceof HTMLElement){
+      if(InitialContainer instanceof HTMLElement && scrapHeader instanceof HTMLElement){
         InitialContainer.style.visibility = 'visible';
+        scrapHeader.style.visibility = 'hidden';
       }
     } else {
       if(getItem === '[]'){
-        if(InitialContainer instanceof HTMLElement){
+        if(InitialContainer instanceof HTMLElement && scrapHeader instanceof HTMLElement){
           InitialContainer.style.visibility = 'visible';
+          scrapHeader.style.visibility = 'hidden';
         }
       } else {
-        if(InitialContainer instanceof HTMLElement){
+        if(InitialContainer instanceof HTMLElement && scrapHeader instanceof HTMLElement){
           InitialContainer.style.visibility = 'hidden';
+          scrapHeader.style.visibility = 'visible';
         }
         getItem = JSON.parse(getItem);
         let copyArr :ArticleType[] = [];
@@ -402,7 +406,7 @@ function Scrap(){
         }}>스크랩 하러 가기</button>
       </div>
 
-      <header>
+      <header className="scrap-header">
         <ul className='header-container'>
           {
             headerList.map((value, i) => {
@@ -431,13 +435,6 @@ function Scrap(){
                         getItem = JSON.parse(getItem || "");
                         // @ts-expect-error
                         let idx = getItem.findIndex(v => v.id === value.id);
-                        if(idx === -1){
-                          // @ts-expect-error
-                          getItem.push(value);
-                          if(buttonEl instanceof HTMLButtonElement){
-                            buttonEl.style.color = 'rgb(255, 180, 35)';
-                          }
-                        } else {
                           // @ts-expect-error
                           getItem.splice(idx, 1);
                           if(buttonEl instanceof HTMLButtonElement){
@@ -447,7 +444,7 @@ function Scrap(){
                               }
                             }
                           }
-                        }
+                          window.alert('스크랩 해제 되었습니다.');
                         localStorage.setItem('scrapList', JSON.stringify(getItem));
                         setReRendering(!reRendering);
                         e.preventDefault();

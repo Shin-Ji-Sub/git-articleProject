@@ -90,6 +90,7 @@ main {
 }
 
 article {
+  position: relative;
   width: 100%;
   height: 20vw;
   padding: 1rem;

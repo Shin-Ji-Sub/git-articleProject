@@ -8,7 +8,7 @@ import { AppDispatch } from "./index";
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { useSelector, useDispatch } from "react-redux/es/exports";
-import { setInitialState, RootState, ArticleType, afterFilter, saveArticle } from "./store";
+import { setInitialState, RootState, ArticleType, settingValue, idSetting } from "./store";
 import { Modal } from "./Component/Modal";
 import { Scrap } from "./Component/Scrap";
 
@@ -23,7 +23,7 @@ export type FilteringType = {
 /* Filtering Function List */
 /** 1. Headline Filtering */
 function headlineFilter(filteringValue :FilteringType, stateArticle :ArticleType[],
-  setArticleArray :Dispatch<SetStateAction<ArticleType[]>>, setScrollEvent :Dispatch<SetStateAction<boolean>>) {
+  setArticleArray :Dispatch<SetStateAction<ArticleType[]>>, setScrollEvent :Dispatch<SetStateAction<boolean>>, dispatch :AppDispatch) {
 
   let copyArticleArray :ArticleType[] = [];
   stateArticle.map((value) => {
@@ -31,6 +31,14 @@ function headlineFilter(filteringValue :FilteringType, stateArticle :ArticleType
       copyArticleArray.push(value);
     }
   });
+
+  let idArr :string[] = [];
+  copyArticleArray.map((value) => {
+    idArr.push(value.id);
+  });
+
+  dispatch(idSetting(idArr));
+
   setArticleArray(copyArticleArray);
   setScrollEvent(false);
 
@@ -38,7 +46,7 @@ function headlineFilter(filteringValue :FilteringType, stateArticle :ArticleType
 
 /** 2. Date Filtering */
 async function dateFilter(filteringValue :FilteringType,
-  setArticleArray :Dispatch<SetStateAction<ArticleType[]>>, setScrollEvent :Dispatch<SetStateAction<boolean>>) {
+  setArticleArray :Dispatch<SetStateAction<ArticleType[]>>, setScrollEvent :Dispatch<SetStateAction<boolean>>, dispatch :AppDispatch) {
   try{
     const dateValue = filteringValue.date.replaceAll('.', '');
     const PROXY = window.location.hostname === 'localhost' ? 'https://api.nytimes.com' : '/proxy';
@@ -56,6 +64,14 @@ async function dateFilter(filteringValue :FilteringType,
         scrap : false
       });
     }
+
+    let idArr :string[] = [];
+    arr.map((value) => {
+      idArr.push(value.id);
+    });
+
+    dispatch(idSetting(idArr));
+
     setArticleArray(arr);
     setScrollEvent(false);
   } catch {
@@ -65,7 +81,7 @@ async function dateFilter(filteringValue :FilteringType,
 
 /** 3. Country Filtering */
 function countryFilter(filteringValue :FilteringType, krToEn :KrToEnType, stateArticle :ArticleType[],
-  setArticleArray :Dispatch<SetStateAction<ArticleType[]>>, setScrollEvent :Dispatch<SetStateAction<boolean>>) {
+  setArticleArray :Dispatch<SetStateAction<ArticleType[]>>, setScrollEvent :Dispatch<SetStateAction<boolean>>, dispatch :AppDispatch) {
   let countryFilterArr :ArticleType[] = [];
   let copyArr = [...filteringValue.country];
   krToEn(copyArr);
@@ -80,13 +96,20 @@ function countryFilter(filteringValue :FilteringType, krToEn :KrToEnType, stateA
     }
   });
 
+  let idArr :string[] = [];
+  countryFilterArr.map((value) => {
+    idArr.push(value.id);
+  });
+
+  dispatch(idSetting(idArr));
+
   setArticleArray(countryFilterArr);
   setScrollEvent(false);
 }
 
 /** 4. Headline + Date */
 function headlinePlusDate(filteringValue :FilteringType,
-  setArticleArray :Dispatch<SetStateAction<ArticleType[]>>, setScrollEvent :Dispatch<SetStateAction<boolean>>){
+  setArticleArray :Dispatch<SetStateAction<ArticleType[]>>, setScrollEvent :Dispatch<SetStateAction<boolean>>, dispatch :AppDispatch){
 
   async function getApi(){
     try{
@@ -113,6 +136,14 @@ function headlinePlusDate(filteringValue :FilteringType,
           copyArticleArray.push(value);
         }
       });
+
+      let idArr :string[] = [];
+      copyArticleArray.map((value) => {
+        idArr.push(value.id);
+      });
+
+      dispatch(idSetting(idArr));
+
       setArticleArray(copyArticleArray);
       setScrollEvent(false);
     } catch {
@@ -124,7 +155,7 @@ function headlinePlusDate(filteringValue :FilteringType,
 
 /** 5. Headline + Country */
 function headlinePlusCountry(filteringValue :FilteringType, krToEn :KrToEnType, stateArticle :ArticleType[],
-  setArticleArray :Dispatch<SetStateAction<ArticleType[]>>, setScrollEvent :Dispatch<SetStateAction<boolean>>){
+  setArticleArray :Dispatch<SetStateAction<ArticleType[]>>, setScrollEvent :Dispatch<SetStateAction<boolean>>, dispatch :AppDispatch){
 
   let countryFilterArr :ArticleType[] = [];
   let copyArr = [...filteringValue.country];
@@ -147,6 +178,13 @@ function headlinePlusCountry(filteringValue :FilteringType, krToEn :KrToEnType, 
     }
   });
 
+  let idArr :string[] = [];
+  copyArticleArray.map((value) => {
+    idArr.push(value.id);
+  });
+
+  dispatch(idSetting(idArr));
+
   setArticleArray(copyArticleArray);
   setScrollEvent(false);
 
@@ -154,7 +192,7 @@ function headlinePlusCountry(filteringValue :FilteringType, krToEn :KrToEnType, 
 
 /** 6. Date + Country */
 function datePlusCountry(filteringValue :FilteringType, krToEn :KrToEnType,
-  setArticleArray :Dispatch<SetStateAction<ArticleType[]>>, setScrollEvent :Dispatch<SetStateAction<boolean>>) {
+  setArticleArray :Dispatch<SetStateAction<ArticleType[]>>, setScrollEvent :Dispatch<SetStateAction<boolean>>, dispatch :AppDispatch) {
 
     async function getApi(){
       try{
@@ -189,6 +227,13 @@ function datePlusCountry(filteringValue :FilteringType, krToEn :KrToEnType,
           }
         });
 
+        let idArr :string[] = [];
+        countryFilterArr.map((value) => {
+          idArr.push(value.id);
+        });
+
+        dispatch(idSetting(idArr));
+
         setArticleArray(countryFilterArr);
         setScrollEvent(false);
         
@@ -202,7 +247,7 @@ function datePlusCountry(filteringValue :FilteringType, krToEn :KrToEnType,
 
 /** 7. Headline + Date + Country */
 function headlinePlusDatePlusCountry(filteringValue :FilteringType, krToEn :KrToEnType,
-  setArticleArray :Dispatch<SetStateAction<ArticleType[]>>, setScrollEvent :Dispatch<SetStateAction<boolean>>) {
+  setArticleArray :Dispatch<SetStateAction<ArticleType[]>>, setScrollEvent :Dispatch<SetStateAction<boolean>>, dispatch :AppDispatch) {
   async function getApi(){
     try{
       const dateValue = filteringValue.date.replaceAll('.', '');
@@ -243,6 +288,12 @@ function headlinePlusDatePlusCountry(filteringValue :FilteringType, krToEn :KrTo
           }
         });
 
+        let idArr :string[] = [];
+        countryFilterArr.map((value) => {
+          idArr.push(value.id);
+        });
+
+        dispatch(idSetting(idArr));
         setArticleArray(countryFilterArr);
         setScrollEvent(false);
       
@@ -336,6 +387,13 @@ function App() {
             scrap : false
           });
         }
+
+        let idArr :string[] = [];
+        arr.map((value) => {
+          idArr.push(value.id);
+        });
+
+        dispatch(idSetting(idArr));
         dispatch(setInitialState(arr));
         setArticleArray(arr);
       } catch {
@@ -374,7 +432,6 @@ function App() {
 
     // Country UI
     if(filteringValue.country[0] === '전체 국가' || filteringValue.country.length === 0){
-      // filteringValue.date = filteringValue.date === '' ? '전체 날짜' : filteringValue.date 
       filteringValue.country = ['전체 국가'];
       let headerContainerLi = document.querySelector('.li-2');
       if(headerContainerLi instanceof HTMLLIElement){
@@ -421,33 +478,33 @@ function App() {
 
         if(filteringValue.country[0] !== '전체 국가' && filteringValue.country.length !== 0){
           // Headline + Date + Country
-          headlinePlusDatePlusCountry(filteringValue, krToEn, setArticleArray, setScrollEvent);
+          headlinePlusDatePlusCountry(filteringValue, krToEn, setArticleArray, setScrollEvent, dispatch);
         } else {
           // Headline + Date
-          headlinePlusDate(filteringValue, setArticleArray, setScrollEvent);
+          headlinePlusDate(filteringValue, setArticleArray, setScrollEvent, dispatch);
         }
 
       } else if(filteringValue.country[0] !== '전체 국가' && filteringValue.country.length !== 0){
         // Headline + Country
-        headlinePlusCountry(filteringValue, krToEn, state.article, setArticleArray, setScrollEvent);
+        headlinePlusCountry(filteringValue, krToEn, state.article, setArticleArray, setScrollEvent, dispatch);
       } else {
         // Headline
-        headlineFilter(filteringValue, state.article, setArticleArray, setScrollEvent);
+        headlineFilter(filteringValue, state.article, setArticleArray, setScrollEvent, dispatch);
       }
 
     } else if (filteringValue.date !== '전체 날짜' && filteringValue.date.length !== 0){
 
       if(filteringValue.country[0] !== '전체 국가' && filteringValue.country.length !== 0){
         // Date + Country
-        datePlusCountry(filteringValue, krToEn, setArticleArray, setScrollEvent);
+        datePlusCountry(filteringValue, krToEn, setArticleArray, setScrollEvent, dispatch);
       } else {
         // Date
-        dateFilter(filteringValue, setArticleArray, setScrollEvent);
+        dateFilter(filteringValue, setArticleArray, setScrollEvent, dispatch);
       }
 
     } else if(filteringValue.country[0] !== '전체 국가' && filteringValue.country.length !== 0){
       // Country
-      countryFilter(filteringValue, krToEn, state.article, setArticleArray, setScrollEvent);
+      countryFilter(filteringValue, krToEn, state.article, setArticleArray, setScrollEvent, dispatch);
     }
 
   }, [filteringValue]);
@@ -499,28 +556,56 @@ function App() {
   }, [modalOn]);
 
   // Scrap UI
-  // 리렌더링 되면 로컬에 저장된 데이터에 따라 버튼 색깔이 달라져야하는데,
-  // let buttonEl = document.getElementById(`${value.id}`); element를 빨리 찾지 못함
-  // null null null element 몇번 리렌더링 되야 찾음 그래서 바로 적용이 안됨.
-  // 로컬에 저장된 id 값이랑 같은지 조건을 넣어야할거같음.
-  // setTimeout 사용해보자, 아 아니면 setInterval
   useEffect(() => {
     let getItem = localStorage.getItem('scrapList');
+    // getItem = JSON.parse(getItem || "");
     if(typeof getItem === 'string'){
       getItem = JSON.parse(getItem);
     }
     if(getItem === null){
       localStorage.setItem('scrapList', JSON.stringify([]));
-    } else {
-      // @ts-expect-error
-      getItem.map((value) => {
-        let buttonEl = document.getElementById(`${value.id}`);
+    } else if(getItem.length !== 0) {
+      var timer = setTimeout(() => {
+        // @ts-expect-error
+        getItem.map((value) => {
+          dispatch(settingValue(value.id));
+          let buttonEl = document.getElementById(`${value.id}`);
+          if(buttonEl instanceof HTMLButtonElement){
+            buttonEl.style.color = 'rgb(255, 180, 35)';
+          }
+        });
+      }, 1000);
+    }
+
+    return () => {
+      clearTimeout(timer);
+    }
+  }, [location, articleArray]);
+
+  useEffect(() => {
+
+    let buttonsEl = Array.from(document.querySelectorAll('.scrap-button')) as HTMLElement[];
+    buttonsEl.map((value, i) => {
+      value.style.color = 'var(--main-bg)';
+    });
+
+    let getItem = localStorage.getItem('scrapList');
+    if(typeof getItem === 'string'){
+      getItem = JSON.parse(getItem);
+    }
+
+    // @ts-expect-error
+    getItem.map((value) => {
+      let findId = state.articleId.find(v => v === value.id);
+      if(findId !== undefined){
+        let buttonEl = document.getElementById(`${findId}`);
         if(buttonEl instanceof HTMLButtonElement){
           buttonEl.style.color = 'rgb(255, 180, 35)';
         }
-      });
-    }
-  }, []);
+      }
+    });
+
+  }, [articleArray]);
 
 
   return (
@@ -558,17 +643,21 @@ function App() {
                             // @ts-expect-error
                             let idx = getItem.findIndex(v => v.id === value.id);
                             if(idx === -1){
+                              dispatch(settingValue(value.id));
                               // @ts-expect-error
                               getItem.push(value);
                               if(buttonEl instanceof HTMLButtonElement){
                                 buttonEl.style.color = 'rgb(255, 180, 35)';
                               }
+                              window.alert('스크랩 되었습니다.');
                             } else {
+                              dispatch(settingValue(value.id));
                               // @ts-expect-error
                               getItem.splice(idx, 1);
                               if(buttonEl instanceof HTMLButtonElement){
                                 buttonEl.style.color = 'var(--main-bg)';
                               }
+                              window.alert('스크랩 해제 되었습니다.');
                             }
                             localStorage.setItem('scrapList', JSON.stringify(getItem));
                             e.preventDefault();

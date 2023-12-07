@@ -65,58 +65,6 @@ const filteringValue = createSlice({
   }
 });
 
-// type FilteringType = {
-//   headline : string,
-//   date : string,
-//   country : string[]
-// }
-
-// const filteringValue :ArticleType[] = [];
-
-// const filtering = createSlice({
-//   name : 'filtering',
-//   initialState : filteringValue,
-//   reducers : {
-//     setFiltering(state, action: PayloadAction<ArticleType[]>){
-//       return state = [...action.payload];
-//     },
-
-//     // filteringFunction 모달에서 실행해야함
-//     filteringFunction(state, action :PayloadAction<FilteringType>){
-//       // Date Filtering
-//       if(action.payload.date !== '전체 날짜' || action.payload.date.length !== 0){
-//         let arr :ArticleType[] = [];
-//         const dateValue = action.payload.date.replaceAll('.', '');
-//         const PROXY = window.location.hostname === 'localhost' ? 'https://api.nytimes.com' : '/proxy';
-//         axios.get(`${PROXY}/svc/search/v2/articlesearch.json?begin_date=${dateValue}&end_date=${dateValue}&api-key=vcX7Gz19ajfmaRuAARlHUrclu7mZh46l`)
-//         .then((result) => {
-//           console.log(result.data.response.docs);
-//           let arr :ArticleType[] = [];
-//           for(let i = 0; i < 10; i++){
-//             // state[i].id = result.data.response.docs[i]._id.slice(-12),
-//             // state[i].headline = result.data.response.docs[i].headline.main,
-//             // state[i].byline = result.data.response.docs[i].byline.original?.slice(3),
-//             // state[i].date = result.data.response.docs[i].pub_date.slice(0, 10),
-//             // state[i].source = result.data.response.docs[i].source,
-//             // state[i].keyword = result.data.response.docs[i].keywords,
-//             // state[i].url = result.data.response.docs[i].web_url
-//             arr.push({
-//               id : result.data.response.docs[i]._id.slice(-12),
-//               headline : result.data.response.docs[i].headline.main,
-//               byline : result.data.response.docs[i].byline.original?.slice(3),
-//               date : result.data.response.docs[i].pub_date.slice(0, 10),
-//               source : result.data.response.docs[i].source,
-//               keyword : result.data.response.docs[i].keywords,
-//               url : result.data.response.docs[i].web_url
-//             });
-//           }
-//         });
-//         return state = [...arr];
-//       }
-//     }
-//   }
-// })
-
 
 const articleAfterFiltering = createSlice({
   name : 'articleAfterFiltering',
@@ -129,42 +77,63 @@ const articleAfterFiltering = createSlice({
 });
 
 
-// type ScrapType = ArticleType & {
-//   scrap : boolean
-// }
+let idInitialState :string[] = [];
 
-const scrapInitialState :ArticleType[] = [];
-
-const scrapArticle = createSlice({
-  name : 'scrapArticle',
-  initialState : scrapInitialState,
+const articleId = createSlice({
+  name : 'articleId',
+  initialState : idInitialState,
   reducers : {
-    saveArticle(state, action :PayloadAction<ArticleType>){
-      let findIdx = state.findIndex(v => v.id === action.payload.id);
-      if(findIdx === -1){
-        let copy = {...action.payload};
-        copy.scrap = true;
-        state.push(copy);
-      } else {
-        state[findIdx].scrap = !state[findIdx].scrap;
-      }
+    idSetting(state, action :PayloadAction<string[]>) {
+      return state = [...action.payload];
     }
   }
 });
 
 
+let scrapInitialState :string[] = [];
+
+const scrapArticle = createSlice({
+  name : 'scrapArticle',
+  initialState : scrapInitialState,
+  reducers : {
+    settingValue(state, action :PayloadAction<string>){
+      let idx = state.findIndex(v => v === action.payload);
+      if(idx === -1){
+        state.push(action.payload);
+      } else {
+        state.splice(idx, 1);
+      }
+    },
+
+    // saveArticle(state, action :PayloadAction<ArticleType>){
+    //   let getItem = localStorage.getItem('scrapList');
+    //   getItem = JSON.parse(getItem || "");
+      
+    //   let findIdx = state.findIndex(v => v.id === action.payload.id);
+    //   if(findIdx === -1){
+    //     let copy = {...action.payload};
+    //     copy.scrap = true;
+    //     state.push(copy);
+    //   } else {
+    //     state[findIdx].scrap = !state[findIdx].scrap;
+    //   }
+    // }
+  }
+});
+
+
 export const { setInitialState } = article.actions;
-// export const { setFiltering, filteringFunction } = filtering.actions;
 export const { applyFilter } = filteringValue.actions;
 export const { afterFilter } = articleAfterFiltering.actions;
-export const { saveArticle } = scrapArticle.actions;
+export const { idSetting } = articleId.actions;
+export const { settingValue } = scrapArticle.actions;
 
 export const store = configureStore({
   reducer: {
     article : article.reducer,
-    // filtering : filtering.reducer,
     filteringValue : filteringValue.reducer,
     articleAfterFiltering : articleAfterFiltering.reducer,
+    articleId : articleId.reducer,
     scrapArticle : scrapArticle.reducer
   }
 });
