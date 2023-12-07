@@ -72,6 +72,7 @@ function Modal ({modalOn, setModalOn, setFilteringValue} : ModalType) {
               <DatePicker
                 dateFormat='yyyy.MM.dd'
                 shouldCloseOnSelect
+                maxDate={new Date()}
                 placeholderText={"날짜를 선택해주세요."}
                 selected={placeholderValue ? startDate : null}
                 onChange={(date :Date) => {

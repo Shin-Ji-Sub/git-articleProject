@@ -1,12 +1,184 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileLines, faCalendarCheck, faMagnifyingGlass, faStar } from "@fortawesome/free-solid-svg-icons";
 import { useLocation, useNavigate, Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Dispatch, SetStateAction } from "react";
 // import { Article } from "../App";
 import { useDispatch, useSelector } from "react-redux";
 import { ArticleType, RootState } from "../store";
 import { Modal } from "./Modal";
-import { FilteringType } from "../App";
+import { FilteringType, KrToEnType } from "../App";
+
+/* Filtering Function List */
+/** 1. Headline Filtering */
+function headlineFilter(filteringValue :FilteringType, scrappedArticle :ArticleType[],
+  setScrappedArticle :Dispatch<SetStateAction<ArticleType[]>>) {
+
+  let copyArticleArray :ArticleType[] = [];
+  scrappedArticle.map((value) => {
+    if(value.headline.toLowerCase().includes(filteringValue.headline.toLowerCase())){
+      copyArticleArray.push(value);
+    }
+  });
+  setScrappedArticle(copyArticleArray);
+  // setScrollEvent(false);
+
+}
+
+/** 2. Date Filtering */
+async function dateFilter(filteringValue :FilteringType, scrappedArticle :ArticleType[],
+  setScrappedArticle :Dispatch<SetStateAction<ArticleType[]>>) {
+  
+    const dateValue = filteringValue.date.replaceAll('.', '-');
+    let copyDateArr :ArticleType[] = []; 
+    scrappedArticle.map((value) => {
+      if(value.date === dateValue){
+        copyDateArr.push(value);
+      }
+    });
+
+    setScrappedArticle(copyDateArr);
+
+}
+
+/** 3. Country Filtering */
+function countryFilter(filteringValue :FilteringType, krToEn :KrToEnType, scrappedArticle :ArticleType[],
+  setScrappedArticle :Dispatch<SetStateAction<ArticleType[]>>) {
+  let countryFilterArr :ArticleType[] = [];
+  let copyArr = [...filteringValue.country];
+  krToEn(copyArr);
+  copyArr.map((nation) => {
+    for(let i = 0; i < scrappedArticle.length; i++){
+      for(let k = 0; k < scrappedArticle[i].keyword.length; k++){
+        if(scrappedArticle[i].keyword[k].value.includes(nation)){
+          countryFilterArr.push(scrappedArticle[i]);
+          return
+        }
+      }
+    }
+  });
+
+  setScrappedArticle(countryFilterArr);
+  // setScrollEvent(false);
+}
+
+/** 4. Headline + Date */
+function headlinePlusDate(filteringValue :FilteringType, scrappedArticle :ArticleType[],
+  setScrappedArticle :Dispatch<SetStateAction<ArticleType[]>>){
+  
+    const dateValue = filteringValue.date.replaceAll('.', '-');
+    let copyDateArr :ArticleType[] = []; 
+    scrappedArticle.map((value) => {
+      if(value.date === dateValue){
+        copyDateArr.push(value);
+      }
+    });
+
+    let copyArticleArray :ArticleType[] = [];
+    copyDateArr.map((value) => {
+      if(value.headline.toLowerCase().includes(filteringValue.headline.toLowerCase())){
+        copyArticleArray.push(value);
+      }
+    });
+
+    setScrappedArticle(copyArticleArray);
+  
+}
+
+/** 5. Headline + Country */
+function headlinePlusCountry(filteringValue :FilteringType, krToEn :KrToEnType, scrappedArticle :ArticleType[],
+  setScrappedArticle :Dispatch<SetStateAction<ArticleType[]>>){
+
+    let countryFilterArr :ArticleType[] = [];
+    let copyArr = [...filteringValue.country];
+    krToEn(copyArr);
+    copyArr.map((nation) => {
+      for(let i = 0; i < scrappedArticle.length; i++){
+        for(let k = 0; k < scrappedArticle[i].keyword.length; k++){
+          if(scrappedArticle[i].keyword[k].value.includes(nation)){
+            countryFilterArr.push(scrappedArticle[i]);
+            return
+          }
+        }
+      }
+    });
+
+    let copyArticleArray :ArticleType[] = [];
+    countryFilterArr.map((value) => {
+      if(value.headline.toLowerCase().includes(filteringValue.headline.toLowerCase())){
+        copyArticleArray.push(value);
+      }
+    });
+
+    setScrappedArticle(copyArticleArray);
+
+} 
+
+/** 6. Date + Country */
+function datePlusCountry(filteringValue :FilteringType, krToEn :KrToEnType, scrappedArticle :ArticleType[],
+  setScrappedArticle :Dispatch<SetStateAction<ArticleType[]>>) {
+
+    const dateValue = filteringValue.date.replaceAll('.', '-');
+    let copyDateArr :ArticleType[] = []; 
+    scrappedArticle.map((value) => {
+      if(value.date === dateValue){
+        copyDateArr.push(value);
+      }
+    });
+
+    let countryFilterArr :ArticleType[] = [];
+    let copyArr = [...filteringValue.country];
+    krToEn(copyArr);
+    copyArr.map((nation) => {
+      for(let i = 0; i < copyDateArr.length; i++){
+        for(let k = 0; k < copyDateArr[i].keyword.length; k++){
+          if(copyDateArr[i].keyword[k].value.includes(nation)){
+            countryFilterArr.push(copyDateArr[i]);
+            return
+          }
+        }
+      }
+    });
+
+    setScrappedArticle(countryFilterArr);
+
+}
+
+/** 7. Headline + Date + Country */
+function headlinePlusDatePlusCountry(filteringValue :FilteringType, krToEn :KrToEnType, scrappedArticle :ArticleType[],
+  setScrappedArticle :Dispatch<SetStateAction<ArticleType[]>>) {
+  
+  const dateValue = filteringValue.date.replaceAll('.', '-');
+  let copyDateArr :ArticleType[] = []; 
+    scrappedArticle.map((value) => {
+      if(value.date === dateValue){
+        copyDateArr.push(value);
+      }
+    });
+
+    let countryFilterArr :ArticleType[] = [];
+    let copyArr = [...filteringValue.country];
+    krToEn(copyArr);
+    copyArr.map((nation) => {
+      for(let i = 0; i < copyDateArr.length; i++){
+        for(let k = 0; k < copyDateArr[i].keyword.length; k++){
+          if(copyDateArr[i].keyword[k].value.includes(nation)){
+            countryFilterArr.push(copyDateArr[i]);
+            return
+          }
+        }
+      }
+    });
+
+    let copyArticleArray :ArticleType[] = [];
+    copyDateArr.map((value) => {
+      if(value.headline.toLowerCase().includes(filteringValue.headline.toLowerCase())){
+        copyArticleArray.push(value);
+      }
+    });
+
+    setScrappedArticle(copyArticleArray);
+
+}
 
 
 function Scrap(){
@@ -24,6 +196,39 @@ function Scrap(){
   const location = useLocation();
   const dispatch = useDispatch();
   const state = useSelector((state :RootState) => state);
+
+  /** Korean to English Funtion */
+  // type KrToEnType = (parameter :string[]) => void
+  const krToEn :KrToEnType= (parameter :string[]) => {
+    parameter.map((value, i, arr) => {
+      switch (value) {
+        case '대한민국': 
+          arr[i] = 'South Korea'; 
+          break;
+        case '중국': 
+          arr[i] = 'China'; 
+          break;
+        case '일본': 
+          arr[i] = 'Japan'; 
+          break;
+        case '미국': 
+          arr[i] = 'US'; 
+          break;
+        case '북한': 
+          arr[i] = 'North Korea'; 
+          break;
+        case '러시아': 
+          arr[i] = 'Russia'; 
+          break;
+        case '프랑스': 
+          arr[i] = 'France'; 
+          break;
+        case '영국': 
+          arr[i] = 'England'; 
+          break;
+      }
+    });
+  }
 
   // Initial Screen
   useEffect(() => {
@@ -95,6 +300,97 @@ function Scrap(){
       }
     }
   }, [modalOn]);
+
+  // Header UI
+  useEffect(() => {
+    // Date UI
+    if(filteringValue.date === '전체 날짜' || filteringValue.date.length === 0){
+      filteringValue.date = '전체 날짜';
+      let headerContainerLi = document.querySelector('.li-1');
+      if(headerContainerLi instanceof HTMLLIElement){
+        headerContainerLi.setAttribute('id', '');
+      }
+    } else {
+      let headerContainerLi = document.querySelector('.li-1');
+      if(headerContainerLi instanceof HTMLLIElement){
+        headerContainerLi.setAttribute('id', 'filtering-css');
+      }
+    }
+
+    // Country UI
+    if(filteringValue.country[0] === '전체 국가' || filteringValue.country.length === 0){ 
+      filteringValue.country = ['전체 국가'];
+      let headerContainerLi = document.querySelector('.li-2');
+      if(headerContainerLi instanceof HTMLLIElement){
+        headerContainerLi.setAttribute('id', '');
+      }
+    } else {
+      filteringValue.country = filteringValue.country.length === 1
+      ? filteringValue.country
+      : [`${filteringValue.country[0]} 외 ${filteringValue.country.length - 1}개`];
+      let headerContainerLi = document.querySelector('.li-2');
+      if(headerContainerLi instanceof HTMLLIElement){
+      headerContainerLi.setAttribute('id', 'filtering-css');
+      }
+    }
+
+    // Headline UI
+    if(filteringValue.headline === '전체 헤드라인' || filteringValue.headline.length === 0){
+      filteringValue.headline = '전체 헤드라인';
+      let headerContainerLi = document.querySelector('.li-0');
+      if(headerContainerLi instanceof HTMLLIElement){
+        headerContainerLi.setAttribute('id', '');
+      }
+    } else {
+      filteringValue.headline = filteringValue.headline.length > 6 ? filteringValue.headline.slice(0, 6) + '...' : filteringValue.headline;
+      let headerContainerLi = document.querySelector('.li-0');
+      if(headerContainerLi instanceof HTMLLIElement){
+        headerContainerLi.setAttribute('id', 'filtering-css');
+      }
+    }
+    
+    setHeaderList([filteringValue.headline, filteringValue.date, ...filteringValue.country])
+  }, [filteringValue]);
+
+  // Filtering Function
+  useEffect(() => {
+    // Headline
+    if(filteringValue.headline !== '전체 헤드라인' && filteringValue.headline.length !== 0){
+
+      if(filteringValue.date !== '전체 날짜' && filteringValue.date.length !== 0){
+
+        if(filteringValue.country[0] !== '전체 국가' && filteringValue.country.length !== 0){
+          // Headline + Date + Country
+          headlinePlusDatePlusCountry(filteringValue, krToEn, scrappedArticle, setScrappedArticle);
+        } else {
+          // Headline + Date
+          headlinePlusDate(filteringValue, scrappedArticle, setScrappedArticle);
+        }
+
+      } else if(filteringValue.country[0] !== '전체 국가' && filteringValue.country.length !== 0){
+        // Headline + Country
+        headlinePlusCountry(filteringValue, krToEn, scrappedArticle, setScrappedArticle);
+      } else {
+        // Headline
+        headlineFilter(filteringValue, scrappedArticle, setScrappedArticle);
+      }
+
+    } else if (filteringValue.date !== '전체 날짜' && filteringValue.date.length !== 0){
+
+      if(filteringValue.country[0] !== '전체 국가' && filteringValue.country.length !== 0){
+        // Date + Country
+        datePlusCountry(filteringValue, krToEn, scrappedArticle, setScrappedArticle);
+      } else {
+        // Date
+        dateFilter(filteringValue, scrappedArticle, setScrappedArticle);
+      }
+
+    } else if(filteringValue.country[0] !== '전체 국가' && filteringValue.country.length !== 0){
+      // Country
+      countryFilter(filteringValue, krToEn, scrappedArticle, setScrappedArticle);
+    }
+
+  }, [filteringValue]);
 
   return(
     <div className="scrap-container">
