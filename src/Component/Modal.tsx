@@ -3,9 +3,6 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.module.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendarCheck } from "@fortawesome/free-solid-svg-icons";
-import { useDispatch } from 'react-redux';
-// import { applyFilter } from '../store';
-// import { filteringFunction } from '../store';
 import { FilteringType } from '../App';
 
 
@@ -30,7 +27,6 @@ function Modal ({modalOn, setModalOn, setFilteringValue} : ModalType) {
     {nation : '영국', click : false}
   ]);
   let [buttonClick, setButtonClick] = useState<HTMLButtonElement>();
-  const dispatch = useDispatch();
 
   // Country Button UI
   useEffect(() => {
@@ -131,4 +127,4 @@ function Modal ({modalOn, setModalOn, setFilteringValue} : ModalType) {
 }
 
 
-export {Modal}
+export default Modal

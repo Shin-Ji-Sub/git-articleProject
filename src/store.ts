@@ -1,5 +1,4 @@
 import { configureStore, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import axios from 'axios';
 import { Filter } from 'http-proxy-middleware';
 
 /* article initialState
@@ -66,17 +65,6 @@ const filteringValue = createSlice({
 });
 
 
-const articleAfterFiltering = createSlice({
-  name : 'articleAfterFiltering',
-  initialState : articleValue,
-  reducers : {
-    afterFilter(state, action :PayloadAction<ArticleType[]>){
-      return state = [...action.payload];
-    }
-  }
-});
-
-
 let idInitialState :string[] = [];
 
 const articleId = createSlice({
@@ -90,51 +78,15 @@ const articleId = createSlice({
 });
 
 
-let scrapInitialState :string[] = [];
-
-const scrapArticle = createSlice({
-  name : 'scrapArticle',
-  initialState : scrapInitialState,
-  reducers : {
-    settingValue(state, action :PayloadAction<string>){
-      let idx = state.findIndex(v => v === action.payload);
-      if(idx === -1){
-        state.push(action.payload);
-      } else {
-        state.splice(idx, 1);
-      }
-    },
-
-    // saveArticle(state, action :PayloadAction<ArticleType>){
-    //   let getItem = localStorage.getItem('scrapList');
-    //   getItem = JSON.parse(getItem || "");
-      
-    //   let findIdx = state.findIndex(v => v.id === action.payload.id);
-    //   if(findIdx === -1){
-    //     let copy = {...action.payload};
-    //     copy.scrap = true;
-    //     state.push(copy);
-    //   } else {
-    //     state[findIdx].scrap = !state[findIdx].scrap;
-    //   }
-    // }
-  }
-});
-
-
 export const { setInitialState } = article.actions;
 export const { applyFilter } = filteringValue.actions;
-export const { afterFilter } = articleAfterFiltering.actions;
 export const { idSetting } = articleId.actions;
-export const { settingValue } = scrapArticle.actions;
 
 export const store = configureStore({
   reducer: {
     article : article.reducer,
     filteringValue : filteringValue.reducer,
-    articleAfterFiltering : articleAfterFiltering.reducer,
-    articleId : articleId.reducer,
-    scrapArticle : scrapArticle.reducer
+    articleId : articleId.reducer
   }
 });
 

@@ -3,14 +3,17 @@ import { faCalendarCheck, faMagnifyingGlass, faHouse, faFileLines, faStar } from
 import './App.css';
 import './Style/Modal.css';
 import './Style/Scrap.css';
-import { useState, useEffect, Dispatch, SetStateAction } from "react";
+import { useState, useEffect, Dispatch, SetStateAction, lazy, Suspense } from "react";
 import { AppDispatch } from "./index";
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { useSelector, useDispatch } from "react-redux/es/exports";
-import { setInitialState, RootState, ArticleType, settingValue, idSetting } from "./store";
-import { Modal } from "./Component/Modal";
-import { Scrap } from "./Component/Scrap";
+import { setInitialState, RootState, ArticleType, idSetting } from "./store";
+import Modal from "./Component/Modal";
+import Scrap from "./Component/Scrap";
+
+const Loading = lazy(() => import('./Component/Loading'));
+
 
 export type KrToEnType = (parameter :string[]) => void
 
@@ -568,7 +571,6 @@ function App() {
       var timer = setTimeout(() => {
         // @ts-expect-error
         getItem.map((value) => {
-          dispatch(settingValue(value.id));
           let buttonEl = document.getElementById(`${value.id}`);
           if(buttonEl instanceof HTMLButtonElement){
             buttonEl.style.color = 'rgb(255, 180, 35)';
@@ -610,6 +612,7 @@ function App() {
 
   return (
     <div className="App">
+      <Suspense fallback={<Loading></Loading>}>
       <Routes>
         <Route path="/" element={
           <>
@@ -643,7 +646,6 @@ function App() {
                             // @ts-expect-error
                             let idx = getItem.findIndex(v => v.id === value.id);
                             if(idx === -1){
-                              dispatch(settingValue(value.id));
                               // @ts-expect-error
                               getItem.push(value);
                               if(buttonEl instanceof HTMLButtonElement){
@@ -651,7 +653,6 @@ function App() {
                               }
                               window.alert('스크랩 되었습니다.');
                             } else {
-                              dispatch(settingValue(value.id));
                               // @ts-expect-error
                               getItem.splice(idx, 1);
                               if(buttonEl instanceof HTMLButtonElement){
@@ -691,6 +692,7 @@ function App() {
         }></Route>
         <Route path="/scrap" element={<Scrap />}></Route>
       </Routes>
+      </Suspense>
       <footer>
         <ul className="footer-container">
           <li className="footer-home" onClick={() => {
@@ -704,7 +706,5 @@ function App() {
     </div>
   );
 }
-
-// export { Article }
 
 export default App;

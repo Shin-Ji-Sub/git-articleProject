@@ -1,11 +1,10 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileLines, faCalendarCheck, faMagnifyingGlass, faStar } from "@fortawesome/free-solid-svg-icons";
-import { useLocation, useNavigate, Link } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState, Dispatch, SetStateAction } from "react";
-// import { Article } from "../App";
 import { useDispatch, useSelector } from "react-redux";
 import { ArticleType, RootState } from "../store";
-import { Modal } from "./Modal";
+import Modal from "./Modal";
 import { FilteringType, KrToEnType } from "../App";
 
 /* Filtering Function List */
@@ -477,4 +476,4 @@ function Scrap(){
   )
 }
 
-export {Scrap}
+export default Scrap
