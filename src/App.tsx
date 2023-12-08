@@ -375,8 +375,10 @@ function App() {
   useEffect(() => {
     async function getApi(){
       try{
-        const PROXY = window.location.hostname === 'localhost' ? 'https://api.nytimes.com' : '/proxy';
-        const getData = await axios.get(`${PROXY}/svc/search/v2/articlesearch.json?page=${scrollCount}&api-key=vcX7Gz19ajfmaRuAARlHUrclu7mZh46l`);
+        // const PROXY = window.location.hostname === 'localhost' ? 'https://api.nytimes.com' : '/proxy';
+        // const getData = await axios.get(`${PROXY}/svc/search/v2/articlesearch.json?page=${scrollCount}&api-key=vcX7Gz19ajfmaRuAARlHUrclu7mZh46l`);
+        const getData = await axios.get(`https://api.nytimes.com/svc/search/v2/articlesearch.json?page=${scrollCount}&api-key=vcX7Gz19ajfmaRuAARlHUrclu7mZh46l`);
+
         let arr :ArticleType[] = [];
         for(let i = 0; i < 10; i++){
           arr.push({
