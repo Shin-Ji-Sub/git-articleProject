@@ -52,8 +52,9 @@ async function dateFilter(filteringValue :FilteringType,
   setArticleArray :Dispatch<SetStateAction<ArticleType[]>>, setScrollEvent :Dispatch<SetStateAction<boolean>>, dispatch :AppDispatch) {
   try{
     const dateValue = filteringValue.date.replaceAll('.', '');
-    const PROXY = window.location.hostname === 'localhost' ? 'https://api.nytimes.com' : '/proxy';
-    const getData = await axios.get(`${PROXY}/svc/search/v2/articlesearch.json?begin_date=${dateValue}&end_date=${dateValue}&api-key=vcX7Gz19ajfmaRuAARlHUrclu7mZh46l`);
+    // const PROXY = window.location.hostname === 'localhost' ? 'https://api.nytimes.com' : '/proxy';
+    // const getData = await axios.get(`${PROXY}/svc/search/v2/articlesearch.json?begin_date=${dateValue}&end_date=${dateValue}&api-key=vcX7Gz19ajfmaRuAARlHUrclu7mZh46l`);
+    const getData = await axios.get(`https://api.nytimes.com/svc/search/v2/articlesearch.json?begin_date=${dateValue}&end_date=${dateValue}&api-key=vcX7Gz19ajfmaRuAARlHUrclu7mZh46l`);
     let arr :ArticleType[] = [];
     for(let i = 0; i < 10; i++){
       arr.push({
@@ -117,8 +118,9 @@ function headlinePlusDate(filteringValue :FilteringType,
   async function getApi(){
     try{
       const dateValue = filteringValue.date.replaceAll('.', '');
-      const PROXY = window.location.hostname === 'localhost' ? 'https://api.nytimes.com' : '/proxy';
-      const getData = await axios.get(`${PROXY}/svc/search/v2/articlesearch.json?begin_date=${dateValue}&end_date=${dateValue}&api-key=vcX7Gz19ajfmaRuAARlHUrclu7mZh46l`);
+      // const PROXY = window.location.hostname === 'localhost' ? 'https://api.nytimes.com' : '/proxy';
+      // const getData = await axios.get(`${PROXY}/svc/search/v2/articlesearch.json?begin_date=${dateValue}&end_date=${dateValue}&api-key=vcX7Gz19ajfmaRuAARlHUrclu7mZh46l`);
+      const getData = await axios.get(`https://api.nytimes.com/svc/search/v2/articlesearch.json?begin_date=${dateValue}&end_date=${dateValue}&api-key=vcX7Gz19ajfmaRuAARlHUrclu7mZh46l`);
       let arr :ArticleType[] = [];
       for(let i = 0; i < 10; i++){
         arr.push({
@@ -200,8 +202,9 @@ function datePlusCountry(filteringValue :FilteringType, krToEn :KrToEnType,
     async function getApi(){
       try{
         const dateValue = filteringValue.date.replaceAll('.', '');
-        const PROXY = window.location.hostname === 'localhost' ? 'https://api.nytimes.com' : '/proxy';
-        const getData = await axios.get(`${PROXY}/svc/search/v2/articlesearch.json?begin_date=${dateValue}&end_date=${dateValue}&api-key=vcX7Gz19ajfmaRuAARlHUrclu7mZh46l`);
+        // const PROXY = window.location.hostname === 'localhost' ? 'https://api.nytimes.com' : '/proxy';
+        // const getData = await axios.get(`${PROXY}/svc/search/v2/articlesearch.json?begin_date=${dateValue}&end_date=${dateValue}&api-key=vcX7Gz19ajfmaRuAARlHUrclu7mZh46l`);
+        const getData = await axios.get(`https://api.nytimes.com/svc/search/v2/articlesearch.json?begin_date=${dateValue}&end_date=${dateValue}&api-key=vcX7Gz19ajfmaRuAARlHUrclu7mZh46l`);
         let arr :ArticleType[] = [];
         for(let i = 0; i < 10; i++){
           arr.push({
@@ -254,8 +257,9 @@ function headlinePlusDatePlusCountry(filteringValue :FilteringType, krToEn :KrTo
   async function getApi(){
     try{
       const dateValue = filteringValue.date.replaceAll('.', '');
-      const PROXY = window.location.hostname === 'localhost' ? 'https://api.nytimes.com' : '/proxy';
-      const getData = await axios.get(`${PROXY}/svc/search/v2/articlesearch.json?begin_date=${dateValue}&end_date=${dateValue}&api-key=vcX7Gz19ajfmaRuAARlHUrclu7mZh46l`);
+      // const PROXY = window.location.hostname === 'localhost' ? 'https://api.nytimes.com' : '/proxy';
+      // const getData = await axios.get(`${PROXY}/svc/search/v2/articlesearch.json?begin_date=${dateValue}&end_date=${dateValue}&api-key=vcX7Gz19ajfmaRuAARlHUrclu7mZh46l`);
+      const getData = await axios.get(`https://api.nytimes.com/svc/search/v2/articlesearch.json?begin_date=${dateValue}&end_date=${dateValue}&api-key=vcX7Gz19ajfmaRuAARlHUrclu7mZh46l`);
       let arr :ArticleType[] = [];
       for(let i = 0; i < 10; i++){
         arr.push({
