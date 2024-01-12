@@ -651,7 +651,7 @@ function App() {
                       <article>
                         <div className="article-top">
                           <h1>{value[1]}</h1>
-                          <button id={typeof value[0] === 'string' ? value[0] : ''} className="scrap-button" onClick={(e) => {
+                          <button id={typeof value[0] === 'string' ? value[0] : ''} aria-label="scrapButton" className="scrap-button" onClick={(e) => {
                             let buttonEl = document.getElementById(`${value[0]}`);
                             let getItem = localStorage.getItem('scrapList');
                             let scrapList :ArticleType[] = JSON.parse(getItem || "");

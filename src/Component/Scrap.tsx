@@ -398,7 +398,7 @@ function Scrap(){
                   <article className="scrap-article">
                     <div className="scrap-article-top">
                       <h1>{value[1]}</h1>
-                      <button id={typeof value[0] === 'string' ? value[0] : ''} className="scrap-button" onClick={(e) => {
+                      <button id={typeof value[0] === 'string' ? value[0] : ''} aria-label="scrapButton" className="scrap-button" onClick={(e) => {
                         let getItem = localStorage.getItem('scrapList');
                         let scrapList :ArticleType = JSON.parse(getItem || "");
                         let idx = scrapList.findIndex(v => v[0] === value[0]);
