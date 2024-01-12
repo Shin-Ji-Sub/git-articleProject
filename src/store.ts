@@ -2,29 +2,14 @@ import { configureStore, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { Filter } from 'http-proxy-middleware';
 
 /* article initialState
-[ {
-  id : _id,
-  headline : headline,
-  byline : byline.original(except 'By'),
-  date : pub_date,
-  source : source
-  keyword : keywords
-} ]
+[ 
+  [id, headline, byline, date, source, [keyword], url],
+  [id, headline, byline, date, source, [keyword], url],
+  [id, headline, byline, date, source, [keyword], url]
+]
 */
-type KeywordType = {
-  [key :string] : string
-}
 
-export type ArticleType = {
-  id : string,
-  headline : string,
-  byline : string,
-  date : string,
-  source : string
-  keyword : KeywordType[],
-  url : string,
-  scrap: boolean
-};
+export type ArticleType = (string | string[])[];
 
 const articleValue :ArticleType[] = [];
 

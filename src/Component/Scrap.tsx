@@ -2,8 +2,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileLines, faCalendarCheck, faMagnifyingGlass, faStar } from "@fortawesome/free-solid-svg-icons";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState, Dispatch, SetStateAction } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { ArticleType, RootState } from "../store";
+import { ArticleType } from "../store";
 import Modal from "./Modal";
 import { FilteringType, KrToEnType } from "../App";
 
@@ -14,12 +13,13 @@ function headlineFilter(filteringValue :FilteringType, scrappedArticle :ArticleT
 
   let copyArticleArray :ArticleType[] = [];
   scrappedArticle.map((value) => {
-    if(value.headline.toLowerCase().includes(filteringValue.headline.toLowerCase())){
-      copyArticleArray.push(value);
+    if(typeof value[1] === 'string'){
+      if(value[1].toLowerCase().includes(filteringValue.headline.toLowerCase())){
+        copyArticleArray.push(value);
+      }
     }
   });
   setScrappedArticle(copyArticleArray);
-  // setScrollEvent(false);
 
 }
 
@@ -30,7 +30,7 @@ async function dateFilter(filteringValue :FilteringType, scrappedArticle :Articl
     const dateValue = filteringValue.date.replaceAll('.', '-');
     let copyDateArr :ArticleType[] = []; 
     scrappedArticle.map((value) => {
-      if(value.date === dateValue){
+      if(value[3] === dateValue){
         copyDateArr.push(value);
       }
     });
@@ -47,17 +47,15 @@ function countryFilter(filteringValue :FilteringType, krToEn :KrToEnType, scrapp
   krToEn(copyArr);
   copyArr.map((nation) => {
     for(let i = 0; i < scrappedArticle.length; i++){
-      for(let k = 0; k < scrappedArticle[i].keyword.length; k++){
-        if(scrappedArticle[i].keyword[k].value.includes(nation)){
-          countryFilterArr.push(scrappedArticle[i]);
-          return
-        }
+      if(scrappedArticle[i][5].includes(nation)){
+        countryFilterArr.push(scrappedArticle[i]);
+        return
       }
     }
   });
 
   setScrappedArticle(countryFilterArr);
-  // setScrollEvent(false);
+
 }
 
 /** 4. Headline + Date */
@@ -67,15 +65,17 @@ function headlinePlusDate(filteringValue :FilteringType, scrappedArticle :Articl
     const dateValue = filteringValue.date.replaceAll('.', '-');
     let copyDateArr :ArticleType[] = []; 
     scrappedArticle.map((value) => {
-      if(value.date === dateValue){
+      if(value[3] === dateValue){
         copyDateArr.push(value);
       }
     });
 
     let copyArticleArray :ArticleType[] = [];
     copyDateArr.map((value) => {
-      if(value.headline.toLowerCase().includes(filteringValue.headline.toLowerCase())){
-        copyArticleArray.push(value);
+      if(typeof value[1] === 'string'){
+        if(value[1].toLowerCase().includes(filteringValue.headline.toLowerCase())){
+          copyArticleArray.push(value);
+        }
       }
     });
 
@@ -92,19 +92,19 @@ function headlinePlusCountry(filteringValue :FilteringType, krToEn :KrToEnType, 
     krToEn(copyArr);
     copyArr.map((nation) => {
       for(let i = 0; i < scrappedArticle.length; i++){
-        for(let k = 0; k < scrappedArticle[i].keyword.length; k++){
-          if(scrappedArticle[i].keyword[k].value.includes(nation)){
-            countryFilterArr.push(scrappedArticle[i]);
-            return
-          }
+        if(scrappedArticle[i][5].includes(nation)){
+          countryFilterArr.push(scrappedArticle[i]);
+          return
         }
       }
     });
 
     let copyArticleArray :ArticleType[] = [];
     countryFilterArr.map((value) => {
-      if(value.headline.toLowerCase().includes(filteringValue.headline.toLowerCase())){
-        copyArticleArray.push(value);
+      if(typeof value[1] === 'string'){
+        if(value[1].toLowerCase().includes(filteringValue.headline.toLowerCase())){
+          copyArticleArray.push(value);
+        }
       }
     });
 
@@ -119,7 +119,7 @@ function datePlusCountry(filteringValue :FilteringType, krToEn :KrToEnType, scra
     const dateValue = filteringValue.date.replaceAll('.', '-');
     let copyDateArr :ArticleType[] = []; 
     scrappedArticle.map((value) => {
-      if(value.date === dateValue){
+      if(value[3] === dateValue){
         copyDateArr.push(value);
       }
     });
@@ -129,11 +129,9 @@ function datePlusCountry(filteringValue :FilteringType, krToEn :KrToEnType, scra
     krToEn(copyArr);
     copyArr.map((nation) => {
       for(let i = 0; i < copyDateArr.length; i++){
-        for(let k = 0; k < copyDateArr[i].keyword.length; k++){
-          if(copyDateArr[i].keyword[k].value.includes(nation)){
-            countryFilterArr.push(copyDateArr[i]);
-            return
-          }
+        if(scrappedArticle[i][5].includes(nation)){
+          countryFilterArr.push(scrappedArticle[i]);
+          return
         }
       }
     });
@@ -149,7 +147,7 @@ function headlinePlusDatePlusCountry(filteringValue :FilteringType, krToEn :KrTo
   const dateValue = filteringValue.date.replaceAll('.', '-');
   let copyDateArr :ArticleType[] = []; 
     scrappedArticle.map((value) => {
-      if(value.date === dateValue){
+      if(value[3] === dateValue){
         copyDateArr.push(value);
       }
     });
@@ -159,19 +157,19 @@ function headlinePlusDatePlusCountry(filteringValue :FilteringType, krToEn :KrTo
     krToEn(copyArr);
     copyArr.map((nation) => {
       for(let i = 0; i < copyDateArr.length; i++){
-        for(let k = 0; k < copyDateArr[i].keyword.length; k++){
-          if(copyDateArr[i].keyword[k].value.includes(nation)){
-            countryFilterArr.push(copyDateArr[i]);
-            return
-          }
+        if(scrappedArticle[i][5].includes(nation)){
+          countryFilterArr.push(scrappedArticle[i]);
+          return
         }
       }
     });
 
     let copyArticleArray :ArticleType[] = [];
     copyDateArr.map((value) => {
-      if(value.headline.toLowerCase().includes(filteringValue.headline.toLowerCase())){
-        copyArticleArray.push(value);
+      if(typeof value[1] === 'string'){
+        if(value[1].toLowerCase().includes(filteringValue.headline.toLowerCase())){
+          copyArticleArray.push(value);
+        }
       }
     });
 
@@ -193,8 +191,6 @@ function Scrap(){
   let [reRendering, setReRendering] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
-  const dispatch = useDispatch();
-  const state = useSelector((state :RootState) => state);
 
   /** Korean to English Funtion */
   // type KrToEnType = (parameter :string[]) => void
@@ -244,54 +240,23 @@ function Scrap(){
         if(InitialContainer instanceof HTMLElement && scrapHeader instanceof HTMLElement){
           InitialContainer.style.visibility = 'visible';
           scrapHeader.style.visibility = 'hidden';
+          setScrappedArticle([]);
         }
       } else {
         if(InitialContainer instanceof HTMLElement && scrapHeader instanceof HTMLElement){
           InitialContainer.style.visibility = 'hidden';
           scrapHeader.style.visibility = 'visible';
         }
-        getItem = JSON.parse(getItem);
+        let scrapList :ArticleType[] = JSON.parse(getItem || "");
         let copyArr :ArticleType[] = [];
-        if(getItem !== null){
-          for(let i = 0; i < getItem.length; i++){
-            let copyObj :ArticleType = {
-              // @ts-expect-error
-              id : getItem[i].id,
-              // @ts-expect-error
-              headline : getItem[i].headline,
-              // @ts-expect-error
-              byline : getItem[i].byline,
-              // @ts-expect-error
-              date : getItem[i].date,
-              // @ts-expect-error
-              source : getItem[i].source,
-              // @ts-expect-error
-              keyword : getItem[i].keyword,
-              // @ts-expect-error
-              url : getItem[i].url,
-              // @ts-expect-error
-              scrap : getItem[i].scrap
-            };
-            copyArr.push(copyObj);
-          }
+        for(let i = 0; i < scrapList.length; i++){
+          let copyObj :ArticleType = [...scrapList[i]];
+          copyArr.push(copyObj);
         }
         setScrappedArticle(copyArr);
       }
     }
   },[location, reRendering]);
-
-  // Scrap UI
-  useEffect(() => {
-    let getItem = localStorage.getItem('scrapList');
-    getItem = JSON.parse(getItem || "");
-    // @ts-expect-error
-    getItem.map((value) => {
-      let buttonEl = document.getElementById(`${value.id}`);
-      if(buttonEl instanceof HTMLButtonElement){
-        buttonEl.style.color = 'rgb(255, 180, 35)';
-      }
-    });
-  });
 
   // Modal ON OFF
   useEffect(() => {
@@ -391,6 +356,11 @@ function Scrap(){
     } else if(filteringValue.country[0] !== '전체 국가' && filteringValue.country.length !== 0){
       // Country
       countryFilter(filteringValue, krToEn, scrappedArticle, setScrappedArticle);
+    } else {
+      let getItem = localStorage.getItem('scrapList');
+      const scrapList = JSON.parse(getItem || "");
+      let copyArr = [...scrapList];
+      setScrappedArticle(copyArr);
     }
 
   }, [filteringValue]);
@@ -424,46 +394,37 @@ function Scrap(){
           {
             scrappedArticle.map((value, i) => {
               return(
-                <a className="link-article" href={`${value.url}`} key={i}>
-                  <article>
-                    <div className="article-top">
-                      <h1>{value.headline}</h1>
-                      <button id={value.id} className="scrap-button" onClick={(e) => {
-                        let buttonEl = document.getElementById(`${value.id}`);
+                <a className="scrap-link-article" href={`${value[6]}`} key={i}>
+                  <article className="scrap-article">
+                    <div className="scrap-article-top">
+                      <h1>{value[1]}</h1>
+                      <button id={typeof value[0] === 'string' ? value[0] : ''} className="scrap-button" onClick={(e) => {
                         let getItem = localStorage.getItem('scrapList');
-                        getItem = JSON.parse(getItem || "");
-                        // @ts-expect-error
-                        let idx = getItem.findIndex(v => v.id === value.id);
-                          // @ts-expect-error
-                          getItem.splice(idx, 1);
-                          if(buttonEl instanceof HTMLButtonElement){
-                            if(buttonEl.parentElement !== null){
-                              if(buttonEl.parentElement.parentElement !== null){
-                                buttonEl.parentElement.parentElement.remove();
-                              }
-                            }
-                          }
-                          window.alert('스크랩 해제 되었습니다.');
-                        localStorage.setItem('scrapList', JSON.stringify(getItem));
+                        let scrapList :ArticleType = JSON.parse(getItem || "");
+                        let idx = scrapList.findIndex(v => v[0] === value[0]);
+                        scrapList.splice(idx, 1);
+
+                        window.alert('스크랩 해제 되었습니다.');
+                        localStorage.setItem('scrapList', JSON.stringify(scrapList));
                         setReRendering(!reRendering);
                         e.preventDefault();
                       }}><FontAwesomeIcon icon={faStar} /></button>
                     </div>
-                    <ul className="article-bottom">
-                      <li className="article-origin">
+                    <div className="scrap-article-bottom">
+                      <div className="scrap-article-origin">
                         <div>{
-                          typeof value.source === 'string' && value.source.length > 15
-                          ? value.source.slice(0, 15) + '...'
-                          : value.source  
+                          typeof value[4] === 'string' && value[4].length > 15
+                          ? value[4].slice(0, 15) + '...'
+                          : value[4]  
                         }</div>
                         <div>{
-                          typeof value.byline === 'string' && value.byline.length > 15
-                          ? value.byline.slice(0, 15) + '...'
-                          : value.byline
+                          typeof value[2] === 'string' && value[2].length > 15
+                          ? value[2].slice(0, 15) + '...'
+                          : value[2]
                         }</div>
-                      </li>
-                      <li className="article-date">{value.date}</li>
-                    </ul>
+                      </div>
+                      <div className="scrap-article-date">{value[3]}</div>
+                    </div>
                   </article>
                 </a>
               )

@@ -30,14 +30,18 @@ function headlineFilter(filteringValue :FilteringType, stateArticle :ArticleType
 
   let copyArticleArray :ArticleType[] = [];
   stateArticle.map((value) => {
-    if(value.headline.toLowerCase().includes(filteringValue.headline.toLowerCase())){
-      copyArticleArray.push(value);
+    if(typeof value[1] === 'string'){
+      if(value[1].toLowerCase().includes(filteringValue.headline.toLowerCase())){
+        copyArticleArray.push(value);
+      }
     }
   });
 
   let idArr :string[] = [];
   copyArticleArray.map((value) => {
-    idArr.push(value.id);
+    if(typeof value[0] === 'string'){
+      idArr.push(value[0]);
+    }
   });
 
   dispatch(idSetting(idArr));
@@ -57,21 +61,22 @@ async function dateFilter(filteringValue :FilteringType,
     const getData = await axios.get(`https://api.nytimes.com/svc/search/v2/articlesearch.json?begin_date=${dateValue}&end_date=${dateValue}&api-key=vcX7Gz19ajfmaRuAARlHUrclu7mZh46l`);
     let arr :ArticleType[] = [];
     for(let i = 0; i < 10; i++){
-      arr.push({
-        id : getData.data.response.docs[i]._id.slice(-12),
-        headline : getData.data.response.docs[i].headline.main,
-        byline : getData.data.response.docs[i].byline.original?.slice(3),
-        date : getData.data.response.docs[i].pub_date.slice(0, 10),
-        source : getData.data.response.docs[i].source,
-        keyword : getData.data.response.docs[i].keywords,
-        url : getData.data.response.docs[i].web_url,
-        scrap : false
-      });
+      arr.push([
+        getData.data.response.docs[i]._id.slice(-12), 
+        getData.data.response.docs[i].headline.main, 
+        getData.data.response.docs[i].byline.original?.slice(3),
+        getData.data.response.docs[i].pub_date.slice(0, 10),
+        getData.data.response.docs[i].source,
+        getData.data.response.docs[i].keywords,
+        getData.data.response.docs[i].web_url
+      ]);
     }
 
     let idArr :string[] = [];
     arr.map((value) => {
-      idArr.push(value.id);
+      if(typeof value[0] === 'string'){
+        idArr.push(value[0]);
+      }
     });
 
     dispatch(idSetting(idArr));
@@ -91,18 +96,18 @@ function countryFilter(filteringValue :FilteringType, krToEn :KrToEnType, stateA
   krToEn(copyArr);
   copyArr.map((nation) => {
     for(let i = 0; i < stateArticle.length; i++){
-      for(let k = 0; k < stateArticle[i].keyword.length; k++){
-        if(stateArticle[i].keyword[k].value.includes(nation)){
-          countryFilterArr.push(stateArticle[i]);
-          return
-        }
+      if(stateArticle[i][5].includes(nation)){
+        countryFilterArr.push(stateArticle[i]);
+        return
       }
     }
   });
 
   let idArr :string[] = [];
   countryFilterArr.map((value) => {
-    idArr.push(value.id);
+    if(typeof value[0] === 'string'){
+      idArr.push(value[0]);
+    }
   });
 
   dispatch(idSetting(idArr));
@@ -123,28 +128,31 @@ function headlinePlusDate(filteringValue :FilteringType,
       const getData = await axios.get(`https://api.nytimes.com/svc/search/v2/articlesearch.json?begin_date=${dateValue}&end_date=${dateValue}&api-key=vcX7Gz19ajfmaRuAARlHUrclu7mZh46l`);
       let arr :ArticleType[] = [];
       for(let i = 0; i < 10; i++){
-        arr.push({
-          id : getData.data.response.docs[i]._id.slice(-12),
-          headline : getData.data.response.docs[i].headline.main,
-          byline : getData.data.response.docs[i].byline.original?.slice(3),
-          date : getData.data.response.docs[i].pub_date.slice(0, 10),
-          source : getData.data.response.docs[i].source,
-          keyword : getData.data.response.docs[i].keywords,
-          url : getData.data.response.docs[i].web_url,
-          scrap : false
-        });
+        arr.push([
+          getData.data.response.docs[i]._id.slice(-12),
+          getData.data.response.docs[i].headline.main,
+          getData.data.response.docs[i].byline.original?.slice(3),
+          getData.data.response.docs[i].pub_date.slice(0, 10),
+          getData.data.response.docs[i].source,
+          getData.data.response.docs[i].keywords,
+          getData.data.response.docs[i].web_url
+        ]);
       }
       
       let copyArticleArray :ArticleType[] = [];
       arr.map((value) => {
-        if(value.headline.toLowerCase().includes(filteringValue.headline.toLowerCase())){
-          copyArticleArray.push(value);
+        if(typeof value[1] === 'string'){
+          if(value[1].toLowerCase().includes(filteringValue.headline.toLowerCase())){
+            copyArticleArray.push(value);
+          }
         }
       });
 
       let idArr :string[] = [];
       copyArticleArray.map((value) => {
-        idArr.push(value.id);
+        if(typeof value[0] === 'string'){
+          idArr.push(value[0]);
+        }
       });
 
       dispatch(idSetting(idArr));
@@ -167,25 +175,27 @@ function headlinePlusCountry(filteringValue :FilteringType, krToEn :KrToEnType, 
   krToEn(copyArr);
   copyArr.map((nation) => {
     for(let i = 0; i < stateArticle.length; i++){
-      for(let k = 0; k < stateArticle[i].keyword.length; k++){
-        if(stateArticle[i].keyword[k].value.includes(nation)){
-          countryFilterArr.push(stateArticle[i]);
-          return
-        }
+      if(stateArticle[i][5].includes(nation)){
+        countryFilterArr.push(stateArticle[i]);
+        return
       }
     }
   });
 
   let copyArticleArray :ArticleType[] = [];
   countryFilterArr.map((value) => {
-    if(value.headline.toLowerCase().includes(filteringValue.headline.toLowerCase())){
-      copyArticleArray.push(value);
+    if(typeof value[1] === 'string'){
+      if(value[1].toLowerCase().includes(filteringValue.headline.toLowerCase())){
+        copyArticleArray.push(value);
+      }
     }
   });
 
   let idArr :string[] = [];
   copyArticleArray.map((value) => {
-    idArr.push(value.id);
+    if(typeof value[0] === 'string'){
+      idArr.push(value[0]);
+    }
   });
 
   dispatch(idSetting(idArr));
@@ -207,16 +217,15 @@ function datePlusCountry(filteringValue :FilteringType, krToEn :KrToEnType,
         const getData = await axios.get(`https://api.nytimes.com/svc/search/v2/articlesearch.json?begin_date=${dateValue}&end_date=${dateValue}&api-key=vcX7Gz19ajfmaRuAARlHUrclu7mZh46l`);
         let arr :ArticleType[] = [];
         for(let i = 0; i < 10; i++){
-          arr.push({
-            id : getData.data.response.docs[i]._id.slice(-12),
-            headline : getData.data.response.docs[i].headline.main,
-            byline : getData.data.response.docs[i].byline.original?.slice(3),
-            date : getData.data.response.docs[i].pub_date.slice(0, 10),
-            source : getData.data.response.docs[i].source,
-            keyword : getData.data.response.docs[i].keywords,
-            url : getData.data.response.docs[i].web_url,
-            scrap : false
-          });
+          arr.push([
+            getData.data.response.docs[i]._id.slice(-12),
+            getData.data.response.docs[i].headline.main,
+            getData.data.response.docs[i].byline.original?.slice(3),
+            getData.data.response.docs[i].pub_date.slice(0, 10),
+            getData.data.response.docs[i].source,
+            getData.data.response.docs[i].keywords,
+            getData.data.response.docs[i].web_url
+          ]);
         }
 
         let countryFilterArr :ArticleType[] = [];
@@ -224,18 +233,18 @@ function datePlusCountry(filteringValue :FilteringType, krToEn :KrToEnType,
         krToEn(copyArr);
         copyArr.map((nation) => {
           for(let i = 0; i < arr.length; i++){
-            for(let k = 0; k < arr[i].keyword.length; k++){
-              if(arr[i].keyword[k].value.includes(nation)){
-                countryFilterArr.push(arr[i]);
-                return
-              }
+            if(arr[i][5].includes(nation)){
+              countryFilterArr.push(arr[i]);
+              return
             }
           }
         });
 
         let idArr :string[] = [];
         countryFilterArr.map((value) => {
-          idArr.push(value.id);
+          if(typeof value[0] === 'string'){
+            idArr.push(value[0]);
+          }
         });
 
         dispatch(idSetting(idArr));
@@ -262,22 +271,23 @@ function headlinePlusDatePlusCountry(filteringValue :FilteringType, krToEn :KrTo
       const getData = await axios.get(`https://api.nytimes.com/svc/search/v2/articlesearch.json?begin_date=${dateValue}&end_date=${dateValue}&api-key=vcX7Gz19ajfmaRuAARlHUrclu7mZh46l`);
       let arr :ArticleType[] = [];
       for(let i = 0; i < 10; i++){
-        arr.push({
-          id : getData.data.response.docs[i]._id.slice(-12),
-          headline : getData.data.response.docs[i].headline.main,
-          byline : getData.data.response.docs[i].byline.original?.slice(3),
-          date : getData.data.response.docs[i].pub_date.slice(0, 10),
-          source : getData.data.response.docs[i].source,
-          keyword : getData.data.response.docs[i].keywords,
-          url : getData.data.response.docs[i].web_url,
-          scrap : false
-        });
+        arr.push([
+          getData.data.response.docs[i]._id.slice(-12),
+          getData.data.response.docs[i].headline.main,
+          getData.data.response.docs[i].byline.original?.slice(3),
+          getData.data.response.docs[i].pub_date.slice(0, 10),
+          getData.data.response.docs[i].source,
+          getData.data.response.docs[i].keywords,
+          getData.data.response.docs[i].web_url
+        ]);
       }
       
       let copyArticleArray :ArticleType[] = [];
       arr.map((value) => {
-        if(value.headline.toLowerCase().includes(filteringValue.headline.toLowerCase())){
-          copyArticleArray.push(value);
+        if(typeof value[1] === 'string'){
+          if(value[1].toLowerCase().includes(filteringValue.headline.toLowerCase())){
+            copyArticleArray.push(value);
+          }
         }
       });
 
@@ -286,18 +296,18 @@ function headlinePlusDatePlusCountry(filteringValue :FilteringType, krToEn :KrTo
         krToEn(copyArr);
         copyArr.map((nation) => {
           for(let i = 0; i < copyArticleArray.length; i++){
-            for(let k = 0; k < copyArticleArray[i].keyword.length; k++){
-              if(copyArticleArray[i].keyword[k].value.includes(nation)){
-                countryFilterArr.push(copyArticleArray[i]);
-                return
-              }
+            if(copyArticleArray[i][5].includes(nation)){
+              countryFilterArr.push(copyArticleArray[i]);
+              return
             }
           }
         });
 
         let idArr :string[] = [];
         countryFilterArr.map((value) => {
-          idArr.push(value.id);
+          if(typeof value[0] === 'string'){
+            idArr.push(value[0]);
+          }
         });
 
         dispatch(idSetting(idArr));
@@ -312,6 +322,8 @@ function headlinePlusDatePlusCountry(filteringValue :FilteringType, krToEn :KrTo
 }
 
 
+
+
 function App() {
   let [filteringValue, setFilteringValue] = useState<FilteringType>({
     headline : '전체 헤드라인',
@@ -319,14 +331,15 @@ function App() {
     country : ['전체 국가']
   });
   const [headerList, setHeaderList] = useState(['전체 헤드라인', '전체 날짜', '전체 국가']);
-  const [headerListIcon] = useState([<FontAwesomeIcon className="header-icon" icon={faMagnifyingGlass}/>, <FontAwesomeIcon className="header-icon" icon={faCalendarCheck}/>])
+  const [headerListIcon] = useState([<FontAwesomeIcon className="header-icon" icon={faMagnifyingGlass}/>, <FontAwesomeIcon className="header-icon" icon={faCalendarCheck}/>]);
   let [articleArray, setArticleArray] = useState<ArticleType[]>([]);
   let [scrollCount, setScrollCount] = useState(0);
   let [modalOn, setModalOn] = useState(false);
   let [scrollEvent, setScrollEvent] = useState(true);
   let navigate = useNavigate();
   let location = useLocation();
-  const state = useSelector((state :RootState) => state);
+  const articleState = useSelector((state :RootState) => state.article);
+  const articleIdState = useSelector((state :RootState) => state.articleId);
   const dispatch = useDispatch<AppDispatch>();
   /** Scroll Event Handler Function */
   const scrollHandle = () => {
@@ -385,41 +398,42 @@ function App() {
 
         let arr :ArticleType[] = [];
         for(let i = 0; i < 10; i++){
-          arr.push({
-            id : getData.data.response.docs[i]._id.slice(-12),
-            headline : getData.data.response.docs[i].headline.main,
-            byline : getData.data.response.docs[i].byline.original?.slice(3),
-            date : getData.data.response.docs[i].pub_date.slice(0, 10),
-            source : getData.data.response.docs[i].source,
-            keyword : getData.data.response.docs[i].keywords,
-            url : getData.data.response.docs[i].web_url,
-            scrap : false
-          });
+          arr.push([
+            getData.data.response.docs[i]._id.slice(-12),
+            getData.data.response.docs[i].headline.main,
+            getData.data.response.docs[i].byline.original?.slice(3),
+            getData.data.response.docs[i].pub_date.slice(0, 10),
+            getData.data.response.docs[i].source,
+            getData.data.response.docs[i].keywords,
+            getData.data.response.docs[i].web_url
+          ]);
         }
 
         let idArr :string[] = [];
         arr.map((value) => {
-          idArr.push(value.id);
+          if(typeof value === 'string'){
+            idArr.push(value[0]);
+          }
         });
 
         dispatch(idSetting(idArr));
         dispatch(setInitialState(arr));
         setArticleArray(arr);
       } catch {
-        console.log('error');
+        console.log('Error');
       }
     }
     getApi();
   }, [scrollCount]);
 
   useEffect(() => {
-    setArticleArray(state.article);
-  }, [state.article]);
+    setArticleArray(articleState);
+  }, [articleState]);
 
   // Header UI
   useEffect(() => {
     setHeaderList(['전체 헤드라인', '전체 날짜', '전체 국가']);
-    setArticleArray(state.article);
+    setArticleArray(articleState);
   }, [location]);
 
   useEffect(() => {
@@ -430,7 +444,7 @@ function App() {
       if(headerContainerLi instanceof HTMLLIElement){
         headerContainerLi.setAttribute('id', '');
       }
-      setArticleArray(state.article);
+      setArticleArray(articleState);
       setScrollEvent(true);
     } else {
       let headerContainerLi = document.querySelector('.li-1');
@@ -446,7 +460,7 @@ function App() {
       if(headerContainerLi instanceof HTMLLIElement){
         headerContainerLi.setAttribute('id', '');
       }
-      setArticleArray(state.article);
+      setArticleArray(articleState);
       setScrollEvent(true);
     } else {
       filteringValue.country = filteringValue.country.length === 1
@@ -465,7 +479,7 @@ function App() {
       if(headerContainerLi instanceof HTMLLIElement){
         headerContainerLi.setAttribute('id', '');
       }
-      setArticleArray(state.article);
+      setArticleArray(articleState);
       setScrollEvent(true);
     } else {
       filteringValue.headline = filteringValue.headline.length > 6 ? filteringValue.headline.slice(0, 6) + '...' : filteringValue.headline;
@@ -495,10 +509,10 @@ function App() {
 
       } else if(filteringValue.country[0] !== '전체 국가' && filteringValue.country.length !== 0){
         // Headline + Country
-        headlinePlusCountry(filteringValue, krToEn, state.article, setArticleArray, setScrollEvent, dispatch);
+        headlinePlusCountry(filteringValue, krToEn, articleState, setArticleArray, setScrollEvent, dispatch);
       } else {
         // Headline
-        headlineFilter(filteringValue, state.article, setArticleArray, setScrollEvent, dispatch);
+        headlineFilter(filteringValue, articleState, setArticleArray, setScrollEvent, dispatch);
       }
 
     } else if (filteringValue.date !== '전체 날짜' && filteringValue.date.length !== 0){
@@ -513,7 +527,7 @@ function App() {
 
     } else if(filteringValue.country[0] !== '전체 국가' && filteringValue.country.length !== 0){
       // Country
-      countryFilter(filteringValue, krToEn, state.article, setArticleArray, setScrollEvent, dispatch);
+      countryFilter(filteringValue, krToEn, articleState, setArticleArray, setScrollEvent, dispatch);
     }
 
   }, [filteringValue]);
@@ -567,17 +581,13 @@ function App() {
   // Scrap UI
   useEffect(() => {
     let getItem = localStorage.getItem('scrapList');
-    // getItem = JSON.parse(getItem || "");
-    if(typeof getItem === 'string'){
-      getItem = JSON.parse(getItem);
-    }
     if(getItem === null){
       localStorage.setItem('scrapList', JSON.stringify([]));
-    } else if(getItem.length !== 0) {
+    } else {
+      let scrapList :ArticleType[] = JSON.parse(getItem || "");
       var timer = setTimeout(() => {
-        // @ts-expect-error
-        getItem.map((value) => {
-          let buttonEl = document.getElementById(`${value.id}`);
+        scrapList.map((value) => {
+          let buttonEl = document.getElementById(`${value[0]}`);
           if(buttonEl instanceof HTMLButtonElement){
             buttonEl.style.color = 'rgb(255, 180, 35)';
           }
@@ -598,13 +608,9 @@ function App() {
     });
 
     let getItem = localStorage.getItem('scrapList');
-    if(typeof getItem === 'string'){
-      getItem = JSON.parse(getItem);
-    }
-
-    // @ts-expect-error
-    getItem.map((value) => {
-      let findId = state.articleId.find(v => v === value.id);
+    let scrapList :ArticleType[] = JSON.parse(getItem || "");
+    scrapList.map((value) => {
+      let findId = articleIdState.find(v => v === value[0]);
       if(findId !== undefined){
         let buttonEl = document.getElementById(`${findId}`);
         if(buttonEl instanceof HTMLButtonElement){
@@ -641,49 +647,47 @@ function App() {
               {
                 articleArray.map((value, i) => {
                   return(
-                    <a className="link-article" href={`${value.url}`} key={i}>
+                    <a className="link-article" href={`${value[1]}`} key={i}>
                       <article>
                         <div className="article-top">
-                          <h1>{value.headline}</h1>
-                          <button id={value.id} className="scrap-button" onClick={(e) => {
-                            let buttonEl = document.getElementById(`${value.id}`);
+                          <h1>{value[1]}</h1>
+                          <button id={typeof value[0] === 'string' ? value[0] : ''} className="scrap-button" onClick={(e) => {
+                            let buttonEl = document.getElementById(`${value[0]}`);
                             let getItem = localStorage.getItem('scrapList');
-                            getItem = JSON.parse(getItem || "");
-                            // @ts-expect-error
-                            let idx = getItem.findIndex(v => v.id === value.id);
+                            let scrapList :ArticleType[] = JSON.parse(getItem || "");
+                            let idx = scrapList.findIndex(v => v[0] === value[0]);
                             if(idx === -1){
-                              // @ts-expect-error
-                              getItem.push(value);
+                              scrapList.push(value);
                               if(buttonEl instanceof HTMLButtonElement){
                                 buttonEl.style.color = 'rgb(255, 180, 35)';
                               }
                               window.alert('스크랩 되었습니다.');
                             } else {
-                              // @ts-expect-error
-                              getItem.splice(idx, 1);
+                              scrapList.splice(idx, 1);
                               if(buttonEl instanceof HTMLButtonElement){
                                 buttonEl.style.color = 'var(--main-bg)';
                               }
                               window.alert('스크랩 해제 되었습니다.');
                             }
-                            localStorage.setItem('scrapList', JSON.stringify(getItem));
+                            localStorage.setItem('scrapList', JSON.stringify(scrapList));
                             e.preventDefault();
                           }}><FontAwesomeIcon icon={faStar} /></button>
                         </div>
+
                         <ul className="article-bottom">
                           <li className="article-origin">
                             <div>{
-                              typeof value.source === 'string' && value.source.length > 15
-                              ? value.source.slice(0, 15) + '...'
-                              : value.source  
+                              typeof value[4] === 'string' && value[4].length > 15
+                              ? value[4].slice(0, 15) + '...'
+                              : value[4]  
                             }</div>
                             <div>{
-                              typeof value.byline === 'string' && value.byline.length > 15
-                              ? value.byline.slice(0, 15) + '...'
-                              : value.byline
+                              typeof value[2] === 'string' && value[2].length > 15
+                              ? value[2].slice(0, 15) + '...'
+                              : value[2]
                             }</div>
                           </li>
-                          <li className="article-date">{value.date}</li>
+                          <li className="article-date">{value[3]}</li>
                         </ul>
                       </article>
                     </a>

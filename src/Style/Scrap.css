@@ -1,3 +1,11 @@
+.scrap-container {
+  background-color: var(--main-bg);
+}
+
+.scrap-container .main-container {
+  border-bottom: 1px solid var(--main-bg);
+}
+
 .initial-container {
   position: absolute;
   width: 50%;
@@ -34,4 +42,78 @@
 
 .scrap-header {
   visibility: hidden;
+}
+
+
+
+/* ===== Main(scrap) ===== */
+.scrap-link-article {
+  width: 100%;
+}
+
+.scrap-article {
+  width: 100%;
+  height: 20vw;
+  display: grid;
+  grid-template-rows: 1fr 20px;
+  row-gap: 1rem;
+  padding: 1rem;
+  border-radius: 10px;
+  color: black;
+  background-color: white;
+}
+
+.scrap-article-top {
+  display: grid;
+  grid-template-columns: 1fr 20px;
+  column-gap: 1rem;
+}
+
+.scrap-article-top button {
+  border: none;
+  background-color: white;
+  color: rgb(255, 180, 35);
+}
+
+.scrap-article-bottom {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.scrap-article-origin {
+  display: flex;
+  column-gap: 1rem;
+}
+
+.scrap-article-date {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  color: rgb(128, 128, 128);
+}
+
+
+
+
+/* ===== Response 500 ===== */
+@media screen and (max-width: 500px){
+  .scrap-article {
+    grid-template-rows: 1fr 50px;
+    row-gap: 1rem;
+    height: 30vw;
+  }
+
+  .scrap-article-origin {
+    flex-direction: column;
+  }
+}
+
+/* ===== Response 430 ===== */
+@media screen and (max-width: 430px){
+  .scrap-article {
+    row-gap: 1.5rem;
+    height: 40vw;
+  }
 }
