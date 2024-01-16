@@ -9,8 +9,6 @@ import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { useSelector, useDispatch } from "react-redux/es/exports";
 import { setInitialState, RootState, ArticleType, idSetting } from "./store";
-// import Modal from "./Component/Modal";
-// import Scrap from "./Component/Scrap";
 
 const Modal = lazy(() => import("./Component/Modal"));
 const Scrap = lazy(() => import("./Component/Scrap"));
