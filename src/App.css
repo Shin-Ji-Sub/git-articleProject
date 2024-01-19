@@ -2,6 +2,7 @@
 :root {
  --main-bg: rgb(238, 238, 238);
  --button-bg: rgb(48, 110, 211);
+ --text-color: rgb(104, 104, 104);
 }
 
 * {
@@ -46,8 +47,8 @@ header {
   align-items: center;
   column-gap: 10px;
   flex-wrap: nowrap;
-  border-bottom: 1px solid rgb(128, 128, 128);
-  color: rgb(128, 128, 128);
+  border-bottom: 1px solid var(--text-color);
+  color: var(--text-color);
 }
 
 #filtering-css {
@@ -56,7 +57,7 @@ header {
 }
 
 .header-container .header-li {
-  border: 1px solid rgb(128, 128, 128);
+  border: 1px solid var(--text-color);
   border-radius: 5rem;
   padding: 0.5rem;
 }
@@ -129,7 +130,7 @@ article {
   position: absolute;
   bottom: 0;
   right: 0;
-  color: rgb(128, 128, 128);
+  color: var(--text-color);
 }
 
 
