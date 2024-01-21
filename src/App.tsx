@@ -647,7 +647,7 @@ function App() {
               {
                 articleArray.map((value, i) => {
                   return(
-                    <a className="link-article" href={`${value[1]}`} key={i}>
+                    <a className="link-article" href={`${value[6]}`} key={i}>
                       <article>
                         <div className="article-top">
                           <h1>{value[1]}</h1>
