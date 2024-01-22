@@ -339,7 +339,6 @@ function App() {
   let navigate = useNavigate();
   let location = useLocation();
   const articleState = useSelector((state :RootState) => state.article);
-  const articleIdState = useSelector((state :RootState) => state.articleId);
   const dispatch = useDispatch<AppDispatch>();
   /** Scroll Event Handler Function */
   const scrollHandle = () => {
@@ -397,6 +396,7 @@ function App() {
         const getData = await axios.get(`https://api.nytimes.com/svc/search/v2/articlesearch.json?page=${scrollCount}&api-key=vcX7Gz19ajfmaRuAARlHUrclu7mZh46l`);
 
         let arr :ArticleType[] = [];
+        let idArr :string[] = [];
         for(let i = 0; i < 10; i++){
           arr.push([
             getData.data.response.docs[i]._id.slice(-12),
@@ -407,14 +407,8 @@ function App() {
             getData.data.response.docs[i].keywords,
             getData.data.response.docs[i].web_url
           ]);
+          idArr.push(getData.data.response.docs[i]._id.slice(-12));
         }
-
-        let idArr :string[] = [];
-        arr.map((value) => {
-          if(typeof value === 'string'){
-            idArr.push(value[0]);
-          }
-        });
 
         dispatch(idSetting(idArr));
         dispatch(setInitialState(arr));
@@ -610,7 +604,7 @@ function App() {
     let getItem = localStorage.getItem('scrapList');
     let scrapList :ArticleType[] = JSON.parse(getItem || "");
     scrapList.map((value) => {
-      let findId = articleIdState.find(v => v === value[0]);
+      let findId = articleState.find(v => v[0] === value[0]);
       if(findId !== undefined){
         let buttonEl = document.getElementById(`${findId}`);
         if(buttonEl instanceof HTMLButtonElement){

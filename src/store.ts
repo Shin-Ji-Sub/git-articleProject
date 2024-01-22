@@ -50,7 +50,7 @@ const filteringValue = createSlice({
 });
 
 
-let idInitialState :string[] = [];
+const idInitialState :string[] = [];
 
 const articleId = createSlice({
   name : 'articleId',
