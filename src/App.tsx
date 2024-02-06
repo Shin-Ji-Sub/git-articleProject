@@ -58,7 +58,7 @@ async function dateFilter(filteringValue :FilteringType,
     const dateValue = filteringValue.date.replaceAll('.', '');
     // const PROXY = window.location.hostname === 'localhost' ? 'https://api.nytimes.com' : '/proxy';
     // const getData = await axios.get(`${PROXY}/svc/search/v2/articlesearch.json?begin_date=${dateValue}&end_date=${dateValue}&api-key=vcX7Gz19ajfmaRuAARlHUrclu7mZh46l`);
-    const getData = await axios.get(`https://api.nytimes.com/svc/search/v2/articlesearch.json?begin_date=${dateValue}&end_date=${dateValue}&api-key=vcX7Gz19ajfmaRuAARlHUrclu7mZh46l`);
+    const getData = await axios.get(`https://api.nytimes.com/svc/search/v2/articlesearch.json?begin_date=${dateValue}&end_date=${dateValue}&api-key=${process.env.REACT_APP_API_KEY}`);
     let arr :ArticleType[] = [];
     for(let i = 0; i < 10; i++){
       arr.push([
@@ -125,7 +125,7 @@ function headlinePlusDate(filteringValue :FilteringType,
       const dateValue = filteringValue.date.replaceAll('.', '');
       // const PROXY = window.location.hostname === 'localhost' ? 'https://api.nytimes.com' : '/proxy';
       // const getData = await axios.get(`${PROXY}/svc/search/v2/articlesearch.json?begin_date=${dateValue}&end_date=${dateValue}&api-key=vcX7Gz19ajfmaRuAARlHUrclu7mZh46l`);
-      const getData = await axios.get(`https://api.nytimes.com/svc/search/v2/articlesearch.json?begin_date=${dateValue}&end_date=${dateValue}&api-key=vcX7Gz19ajfmaRuAARlHUrclu7mZh46l`);
+      const getData = await axios.get(`https://api.nytimes.com/svc/search/v2/articlesearch.json?begin_date=${dateValue}&end_date=${dateValue}&api-key=${process.env.REACT_APP_API_KEY}`);
       let arr :ArticleType[] = [];
       for(let i = 0; i < 10; i++){
         arr.push([
@@ -214,7 +214,7 @@ function datePlusCountry(filteringValue :FilteringType, krToEn :KrToEnType,
         const dateValue = filteringValue.date.replaceAll('.', '');
         // const PROXY = window.location.hostname === 'localhost' ? 'https://api.nytimes.com' : '/proxy';
         // const getData = await axios.get(`${PROXY}/svc/search/v2/articlesearch.json?begin_date=${dateValue}&end_date=${dateValue}&api-key=vcX7Gz19ajfmaRuAARlHUrclu7mZh46l`);
-        const getData = await axios.get(`https://api.nytimes.com/svc/search/v2/articlesearch.json?begin_date=${dateValue}&end_date=${dateValue}&api-key=vcX7Gz19ajfmaRuAARlHUrclu7mZh46l`);
+        const getData = await axios.get(`https://api.nytimes.com/svc/search/v2/articlesearch.json?begin_date=${dateValue}&end_date=${dateValue}&api-key=${process.env.REACT_APP_API_KEY}`);
         let arr :ArticleType[] = [];
         for(let i = 0; i < 10; i++){
           arr.push([
@@ -268,7 +268,7 @@ function headlinePlusDatePlusCountry(filteringValue :FilteringType, krToEn :KrTo
       const dateValue = filteringValue.date.replaceAll('.', '');
       // const PROXY = window.location.hostname === 'localhost' ? 'https://api.nytimes.com' : '/proxy';
       // const getData = await axios.get(`${PROXY}/svc/search/v2/articlesearch.json?begin_date=${dateValue}&end_date=${dateValue}&api-key=vcX7Gz19ajfmaRuAARlHUrclu7mZh46l`);
-      const getData = await axios.get(`https://api.nytimes.com/svc/search/v2/articlesearch.json?begin_date=${dateValue}&end_date=${dateValue}&api-key=vcX7Gz19ajfmaRuAARlHUrclu7mZh46l`);
+      const getData = await axios.get(`https://api.nytimes.com/svc/search/v2/articlesearch.json?begin_date=${dateValue}&end_date=${dateValue}&api-key=${process.env.REACT_APP_API_KEY}`);
       let arr :ArticleType[] = [];
       for(let i = 0; i < 10; i++){
         arr.push([
@@ -393,7 +393,7 @@ function App() {
       try{
         // const PROXY = window.location.hostname === 'localhost' ? 'https://api.nytimes.com' : '/proxy';
         // const getData = await axios.get(`${PROXY}/svc/search/v2/articlesearch.json?page=${scrollCount}&api-key=vcX7Gz19ajfmaRuAARlHUrclu7mZh46l`);
-        const getData = await axios.get(`https://api.nytimes.com/svc/search/v2/articlesearch.json?page=${scrollCount}&api-key=vcX7Gz19ajfmaRuAARlHUrclu7mZh46l`);
+        const getData = await axios.get(`https://api.nytimes.com/svc/search/v2/articlesearch.json?page=${scrollCount}&api-key=${process.env.REACT_APP_API_KEY}`);
 
         let arr :ArticleType[] = [];
         let idArr :string[] = [];
